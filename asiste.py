@@ -33,7 +33,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         '''
         
         QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
-        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("returnPressed()"), self.enterEnCreadoPor)
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.enterEnCreadoPor)
+        #QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("textEdited()"), self.enterEnCreadoPor)
+
 
         '''
         QtCore.QObject.connect(self.ui.btnLimpiar, QtCore.SIGNAL("clicked()"), self.limpiarText)
@@ -64,16 +66,19 @@ class ControlMainWindow(QtGui.QMainWindow):
         model = QtGui.QStringListModel()
         completer.setModel(model)
         self.get_data(model)
-        print self.ui.txtCreadoPor.text()
-        #edit.show()
  
     def get_data(self, model):
-        model.setStringList(["carlos garcia - 01", "carlos garzon", "garzon", "carlos alberto garcia"])
+        model.setStringList(["carlos garcia - 01", "carlos garzon - 02", "garzon - 04", "carlos alberto garcia - 06"])
 
     def enterEnCreadoPor(self):
         '''
         '''
-        print self.ui.txtCreadoPor.text()
+        valorPasado = self.ui.txtCreadoPor.text()
+        cod = valorPasado.split('-')[1].strip()
+        nombre = valorPasado.split('-')[0].strip()
+        self.ui.txtCreadoPor.setText(nombre)
+        print cod
+
 
     def llenarCombo(self):
         '''
