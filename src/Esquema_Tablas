@@ -1,0 +1,33 @@
+
+-- Schema: asiste
+-- DROP SCHEMA asiste;
+
+CREATE SCHEMA asiste
+  AUTHORIZATION admhc;
+
+
+
+-- Table: asiste.estado
+-- DROP TABLE asiste.estado;
+
+CREATE TABLE asiste.estado
+(
+  id serial NOT NULL, -- Campo Autoincremental
+  del integer DEFAULT 0, -- Campo que indica si un registro es eliminado, por defecto tiene valor 0 que indica que no ha sido eliminado
+  sym character varying(100), -- Campo que describe el estado de un control
+  observacion character varying(240), -- Campo que permite dar un detalle o hacer alguna observacion sobre el estado
+  CONSTRAINT estado_id PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE asiste.estado
+  OWNER TO admhc;
+COMMENT ON TABLE asiste.estado
+  IS 'Tabla de Status de las Ordenes de Servicio';
+COMMENT ON COLUMN asiste.estado.id IS 'Campo Autoincremental';
+COMMENT ON COLUMN asiste.estado.del IS 'Campo que indica si un registro es eliminado, por defecto tiene valor 0 que indica que no ha sido eliminado';
+COMMENT ON COLUMN asiste.estado.sym IS 'Campo que describe el estado de un control';
+COMMENT ON COLUMN asiste.estado.observacion IS 'Campo que permite dar un detalle o hacer alguna observacion sobre el estado';
+
+
