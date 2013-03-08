@@ -31,3 +31,43 @@ COMMENT ON COLUMN asiste.estado.sym IS 'Campo que describe el estado de un contr
 COMMENT ON COLUMN asiste.estado.observacion IS 'Campo que permite dar un detalle o hacer alguna observacion sobre el estado';
 
 
+##########################################################################
+-- Table: asiste.contactos
+
+-- DROP TABLE asiste.contactos;
+##########################################################################
+CREATE TABLE asiste.contactos
+(
+  id serial NOT NULL, -- Campo autoincremental Id unico
+  del integer, -- Campo que permite saber si un registro fue eliminado, por defecto el valor es 0 que indica que no ha sido eliminado 1 indica que fue eliminado
+  cedula integer NOT NULL, -- Campo que permite indicar la cedula de indentidad o cualquier ID unico para una persona, no se permiten valores Nulos
+  nombre character varying(100) NOT NULL, -- Campo para indicar el nombre de la Persona
+  apellido character varying(100) NOT NULL, -- Campo para indicar el apellido o apellidos de la persona
+  usuario_red character varying(100), -- campo que permite almacenar el uwsuario de red, no es obligatorio
+  email character varying(100), -- Correo Electronico, no es obligatorio
+  telefono_oficina character varying(100), -- Campo para indicar el telefono de la oficina
+  telefono_movil character varying(100), -- Campo para imndicar el telefono Celular o Movil
+  tipo_contacto_id integer DEFAULT 0, -- Campo para almacenar el ID del tipo de Contacto. se relaciona con  la tabla tipo_contacto
+  ubicacion_id integer, -- Campo para colocar el ID de la Ubicacion, se relaciona con la tabla Ubicacion
+  CONSTRAINT contacto_id PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE asiste.contactos
+  OWNER TO admhc;
+COMMENT ON TABLE asiste.contactos
+  IS 'Tabla de Contactos';
+COMMENT ON COLUMN asiste.contactos.id IS 'Campo autoincremental Id unico';
+COMMENT ON COLUMN asiste.contactos.del IS 'Campo que permite saber si un registro fue eliminado, por defecto el valor es 0 que indica que no ha sido eliminado 1 indica que fue eliminado';
+COMMENT ON COLUMN asiste.contactos.cedula IS 'Campo que permite indicar la cedula de indentidad o cualquier ID unico para una persona, no se permiten valores Nulos';
+COMMENT ON COLUMN asiste.contactos.nombre IS 'Campo para indicar el nombre de la Persona';
+COMMENT ON COLUMN asiste.contactos.apellido IS 'Campo para indicar el apellido o apellidos de la persona';
+COMMENT ON COLUMN asiste.contactos.usuario_red IS 'campo que permite almacenar el uwsuario de red, no es obligatorio';
+COMMENT ON COLUMN asiste.contactos.email IS 'Correo Electronico, no es obligatorio';
+COMMENT ON COLUMN asiste.contactos.telefono_oficina IS 'Campo para indicar el telefono de la oficina';
+COMMENT ON COLUMN asiste.contactos.telefono_movil IS 'Campo para imndicar el telefono Celular o Movil';
+COMMENT ON COLUMN asiste.contactos.tipo_contacto_id IS 'Campo para almacenar el ID del tipo de Contacto. se relaciona con  la tabla tipo_contacto';
+COMMENT ON COLUMN asiste.contactos.ubicacion_id IS 'Campo para colocar el ID de la Ubicacion, se relaciona con la tabla Ubicacion';
+
+

@@ -57,18 +57,24 @@ class ControlMainWindow(QtGui.QMainWindow):
         '''
         host, db, user, clave = fc.opcion_consultar('POSTGRESQL')
         self.cadconex = "host='%s' dbname='%s' user='%s' password='%s'" % (host[1], db[1], user[1], clave[1])
-
+        
+        pg = ConectarPG(self.cadconex)
+        regContactos = pg.ejecutar("Select nombre||' '||apellido||'-'||cedula as contacto from asiste.contactos")
+        self.autoCompletado(self.ui.txtCreadoPor, regContactos)
+        #self.autoCompletado(self.ui.txtReportadoPor, regContactos)
+        
         self.registros = []
         self.llenarCombo()
-
+ 
+    def autoCompletado(self, objeto, lista):
+        '''
+        '''
         completer = QtGui.QCompleter()
-        self.ui.txtCreadoPor.setCompleter(completer)
+        objeto.setCompleter(completer)
         model = QtGui.QStringListModel()
         completer.setModel(model)
-        self.get_data(model)
- 
-    def get_data(self, model):
-        model.setStringList(["carlos garcia - 01", "carlos garzon - 02", "garzon - 04", "carlos alberto garcia - 06"])
+        listaAutoCompletado = [f[0] for f in lista]  # ["carlos garcia - 03", "garzon - 04", "carlos alberto garcia - 06"]
+        model.setStringList(listaAutoCompletado)
 
     def enterEnCreadoPor(self):
         '''
@@ -121,7 +127,12 @@ class ControlMainWindow(QtGui.QMainWindow):
         combo.setModel(model)
         combo.show()
         '''
-       
+    def nombrepc(self):
+        return os.uname()[1]
+    
+    def login(self):
+        return os.getlogin()
+
     def mostrar(self):
         '''
         '''
