@@ -75,7 +75,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Reporte de Incidentes</string>
   </property>
   <widget class="QLineEdit" name="lineEdit_9">
    <property name="geometry">
@@ -1041,7 +1041,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../pymanati/img/25px_exit.png</normaloff>../../pymanati/img/25px_exit.png</iconset>
+      <normaloff>../img/25px_exit.png</normaloff>../img/25px_exit.png</iconset>
     </property>
    </widget>
   </widget>
@@ -1062,7 +1062,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../agenda/img/40px_reload.png</normaloff>../../agenda/img/40px_reload.png</iconset>
+     <normaloff>../img/40px_reload.png</normaloff>../img/40px_reload.png</iconset>
    </property>
   </widget>
   <widget class="QPushButton" name="btnModificar">
@@ -1085,7 +1085,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../agenda/img/40px-Crystal_Clear_app_kedit.png</normaloff>../../agenda/img/40px-Crystal_Clear_app_kedit.png</iconset>
+     <normaloff>../img/40px-Crystal_Clear_app_kedit.png</normaloff>../img/40px-Crystal_Clear_app_kedit.png</iconset>
    </property>
   </widget>
   <widget class="QPushButton" name="btnLimpiar">
@@ -1105,7 +1105,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../agenda/img/erase.png</normaloff>../../agenda/img/erase.png</iconset>
+     <normaloff>../img/erase.png</normaloff>../img/erase.png</iconset>
    </property>
   </widget>
   <widget class="QPushButton" name="btnNuevo">
@@ -1125,7 +1125,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../agenda/img/30px-Crystal_Clear_app_List_manager.png</normaloff>../../agenda/img/30px-Crystal_Clear_app_List_manager.png</iconset>
+     <normaloff>../img/30px-Crystal_Clear_app_List_manager.png</normaloff>../img/30px-Crystal_Clear_app_List_manager.png</iconset>
    </property>
   </widget>
   <widget class="QPushButton" name="btnEliminar">
@@ -1145,7 +1145,7 @@
    </property>
    <property name="icon">
     <iconset>
-     <normaloff>../../agenda/img/30px_1 (514).png</normaloff>../../agenda/img/30px_1 (514).png</iconset>
+     <normaloff>../img/30px_1 (514).png</normaloff>../img/30px_1 (514).png</iconset>
    </property>
   </widget>
  </widget>
