@@ -10,7 +10,6 @@
 import sys
 import datetime
 from PySide import QtCore, QtGui
-from PyQt4.QtCore import Qt,QVariant
 from rutinas.varias import *
 from windowUi import Ui_Form
 
@@ -33,8 +32,13 @@ class ControlMainWindow(QtGui.QMainWindow):
         '''
         
         QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
-        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.enterEnCreadoPor)
-        #QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("textEdited()"), self.enterEnCreadoPor)
+        
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarId(self.ui.txtCreadoPor))
+        
+        QtCore.QObject.connect(self.ui.txtReportadoPor, QtCore.SIGNAL("editingFinisched()"), self.quitarId(self.ui.txtReportadoPor))
+        
+        QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinisched()"), self.quitarId(self.ui.txtAfectado))
+
 
 
         '''
@@ -60,9 +64,11 @@ class ControlMainWindow(QtGui.QMainWindow):
         
         pg = ConectarPG(self.cadconex)
         regContactos = pg.ejecutar("Select nombre||' '||apellido||'-'||cedula as contacto from asiste.contactos")
-        self.autoCompletado(self.ui.txtCreadoPor, regContactos)
-        #self.autoCompletado(self.ui.txtReportadoPor, regContactos)
         
+        self.autoCompletado(self.ui.txtCreadoPor, regContactos)
+        self.autoCompletado(self.ui.txtReportadoPor, regContactos)
+        self.autoCompletado(self.ui.txtAfectado, regContactos)
+
         self.registros = []
         self.llenarCombo()
  
@@ -76,14 +82,16 @@ class ControlMainWindow(QtGui.QMainWindow):
         listaAutoCompletado = [f[0] for f in lista]  # ["carlos garcia - 03", "garzon - 04", "carlos alberto garcia - 06"]
         model.setStringList(listaAutoCompletado)
 
-    def enterEnCreadoPor(self):
+    def quitarId(self, objeto):
         '''
-        '''
-        valorPasado = self.ui.txtCreadoPor.text()
+        
+        valorPasado = objeto.text()  # self.ui.txtCreadoPor.text()
         cod = valorPasado.split('-')[1].strip()
         nombre = valorPasado.split('-')[0].strip()
-        self.ui.txtCreadoPor.setText(nombre)
+        objeto.setText(nombre)  # self.ui.txtCreadoPor.setText(nombre)
         print cod
+        '''
+        print 'paso'
 
 
     def llenarCombo(self):
