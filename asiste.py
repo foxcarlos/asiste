@@ -31,13 +31,13 @@ class ControlMainWindow(QtGui.QMainWindow):
         Aqui se conectan todos los objetos con sus slot
         '''
         
-        QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
+        #QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
         
-        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarId(self.ui.txtCreadoPor))
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarId)
         
-        QtCore.QObject.connect(self.ui.txtReportadoPor, QtCore.SIGNAL("editingFinisched()"), self.quitarId(self.ui.txtReportadoPor))
+        #QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinished()"), self.auto)
         
-        QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinisched()"), self.quitarId(self.ui.txtAfectado))
+        #QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinisched()"), self.quitarId())
 
 
 
@@ -49,6 +49,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         '''
 
         self.main()
+
+    def probar(self):
+        pass
 
     def main(self):
         '''
@@ -63,36 +66,53 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.cadconex = "host='%s' dbname='%s' user='%s' password='%s'" % (host[1], db[1], user[1], clave[1])
         
         pg = ConectarPG(self.cadconex)
-        regContactos = pg.ejecutar("Select nombre||' '||apellido||'-'||cedula as contacto from asiste.contactos")
+        regContactos = pg.ejecutar("Select nombre||' '||apellido||'^'||id as contacto from asiste.contactos")
         
         self.autoCompletado(self.ui.txtCreadoPor, regContactos)
         self.autoCompletado(self.ui.txtReportadoPor, regContactos)
         self.autoCompletado(self.ui.txtAfectado, regContactos)
-
+        
+        self.ui.txtFechaApertura.setDateTime(datetime.datetime.now())
+        
         self.registros = []
         self.llenarCombo()
  
     def autoCompletado(self, objeto, lista):
         '''
-        '''
-        completer = QtGui.QCompleter()
-        objeto.setCompleter(completer)
-        model = QtGui.QStringListModel()
-        completer.setModel(model)
-        listaAutoCompletado = [f[0] for f in lista]  # ["carlos garcia - 03", "garzon - 04", "carlos alberto garcia - 06"]
-        model.setStringList(listaAutoCompletado)
+        Parametro recibidos 2:
+        1-) tipo Obj con el nombre del objeto al cual se le va aplicar el 
+        autocompletado
+        2-) Tipo Lista, La lista que se desea mostrar en el autocompletado
 
-    def quitarId(self, objeto):
+        Este metodo permite iniciar el autocompletado de alguno de los textbox 
+        o QlineEdit
+        '''       
+        wordList = [f[0] for f in lista]
+        lineEdit = objeto
+        completer = QtGui.QCompleter(wordList, self)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        lineEdit.setCompleter(completer)
+
+    def quitarId(self):
         '''
+        '''        
+        id = ''
+        nombre = ''
         
-        valorPasado = objeto.text()  # self.ui.txtCreadoPor.text()
-        cod = valorPasado.split('-')[1].strip()
-        nombre = valorPasado.split('-')[0].strip()
-        objeto.setText(nombre)  # self.ui.txtCreadoPor.setText(nombre)
-        print cod
-        '''
-        print 'paso'
-
+        valorPasado = self.ui.txtCreadoPor.text()
+        if valorPasado:
+            if '^' in valorPasado:
+                id = valorPasado.split('^')[1].strip()
+                nombre = valorPasado.split('^')[0].strip()
+                self.ui.txtCreadoPor.setText(nombre)
+                self.ui.txtIdCreadoPor.setText(id)
+            else:
+                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+                mi.exec_()
+        else:
+            self.ui.txtCreadoPor.setText(nombre)
+            self.ui.txtIdCreadoPor.setText(id)
+ 
 
     def llenarCombo(self):
         '''
@@ -101,7 +121,7 @@ class ControlMainWindow(QtGui.QMainWindow):
             pg = ConectarPG(self.cadconex)
             cadenaPasada = "select id, sym from asiste.estado where del = 0"
             registros = pg.ejecutar(cadenaPasada)
-            print registros
+            #print registros
             pg.cur.close()
             pg.conn.close()
         except:
