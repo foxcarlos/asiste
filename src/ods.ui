@@ -1173,6 +1173,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
   </widget>
   <widget class="QLineEdit" name="txtIdAfectado">
    <property name="geometry">
@@ -1265,6 +1268,11 @@
   <tabstop>txtIdCreadoPor</tabstop>
   <tabstop>txtCreadoPor</tabstop>
   <tabstop>btnCreadoPor</tabstop>
+  <tabstop>txtIdReportadoPor</tabstop>
+  <tabstop>txtReportadoPor</tabstop>
+  <tabstop>btnReportadoPor</tabstop>
+  <tabstop>txtIdAfectado</tabstop>
+  <tabstop>btnAfectado</tabstop>
   <tabstop>lineEdit_13</tabstop>
   <tabstop>lineEdit_9</tabstop>
   <tabstop>pushButton</tabstop>
@@ -1281,6 +1289,8 @@
   <tabstop>lineEdit_21</tabstop>
   <tabstop>pushButton_5</tabstop>
   <tabstop>cbxEstado_2</tabstop>
+  <tabstop>txtFechaModificacion</tabstop>
+  <tabstop>txtFechaCierre</tabstop>
   <tabstop>lineEdit_8</tabstop>
   <tabstop>plainTextEdit</tabstop>
  </tabstops>

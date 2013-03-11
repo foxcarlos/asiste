@@ -33,13 +33,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         
         #QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
         
-        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarId)
-        
-        #QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinished()"), self.auto)
-        
-        #QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinisched()"), self.quitarId())
-
-
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdCreadoPor)
+        QtCore.QObject.connect(self.ui.txtReportadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdReportadoPor)
+        QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinished()"), self.quitarIdAfectado)
 
         '''
         QtCore.QObject.connect(self.ui.btnLimpiar, QtCore.SIGNAL("clicked()"), self.limpiarText)
@@ -64,19 +60,24 @@ class ControlMainWindow(QtGui.QMainWindow):
         '''
         host, db, user, clave = fc.opcion_consultar('POSTGRESQL')
         self.cadconex = "host='%s' dbname='%s' user='%s' password='%s'" % (host[1], db[1], user[1], clave[1])
+        self.ui.txtFechaApertura.setDateTime(datetime.datetime.now())
+        self.registros = []
+        self.llenarCombo()
+        self.prepararAutoCompletar()
         
+    def prepararAutoCompletar(self):
         pg = ConectarPG(self.cadconex)
-        regContactos = pg.ejecutar("Select nombre||' '||apellido||'^'||id as contacto from asiste.contactos")
+
+        regContactos0 = pg.ejecutar("Select nombre||' '||apellido||'^'||id as contacto from asiste.contactos order by nombre")
+        regContactos1 = pg.ejecutar("Select apellido||' '||nombre||'^'||id as contacto from asiste.contactos order by apellido")
+        regContactos2 = pg.ejecutar("Select cedula || ' '||nombre||' '||apellido||'^'||id as contacto from asiste.contactos order by cedula")
+        
+        regContactos = regContactos0 + regContactos1 + regContactos2
         
         self.autoCompletado(self.ui.txtCreadoPor, regContactos)
         self.autoCompletado(self.ui.txtReportadoPor, regContactos)
         self.autoCompletado(self.ui.txtAfectado, regContactos)
         
-        self.ui.txtFechaApertura.setDateTime(datetime.datetime.now())
-        
-        self.registros = []
-        self.llenarCombo()
- 
     def autoCompletado(self, objeto, lista):
         '''
         Parametro recibidos 2:
@@ -93,7 +94,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         lineEdit.setCompleter(completer)
 
-    def quitarId(self):
+    def quitarIdCreadoPor(self):
         '''
         '''        
         id = ''
@@ -106,12 +107,60 @@ class ControlMainWindow(QtGui.QMainWindow):
                 nombre = valorPasado.split('^')[0].strip()
                 self.ui.txtCreadoPor.setText(nombre)
                 self.ui.txtIdCreadoPor.setText(id)
+                
+                font = QtGui.QFont()
+                font.setUnderline(True)
+                self.ui.txtCreadoPor.setFont(font)       
+            else:
+                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+                mi.exec_()
+                font = QtGui.QFont()
+                font.setUnderline(False)
+                self.ui.txtCreadoPor.setFont(font)       
+ 
+        else:
+            self.ui.txtCreadoPor.setText(nombre)
+            self.ui.txtIdCreadoPor.setText(id)
+ 
+    def quitarIdReportadoPor(self):
+        '''
+        '''        
+        id = ''
+        nombre = ''
+        
+        valorPasado = self.ui.txtReportadoPor.text()
+        if valorPasado:
+            if '^' in valorPasado:
+                id = valorPasado.split('^')[1].strip()
+                nombre = valorPasado.split('^')[0].strip()
+                self.ui.txtReportadoPor.setText(nombre)
+                self.ui.txtIdReportadoPor.setText(id)
             else:
                 mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
                 mi.exec_()
         else:
-            self.ui.txtCreadoPor.setText(nombre)
-            self.ui.txtIdCreadoPor.setText(id)
+            self.ui.txtReportadoPor.setText(nombre)
+            self.ui.txtIdReportadoPor.setText(id)
+
+    def quitarIdAfectado(self):
+        '''
+        '''        
+        id = ''
+        nombre = ''
+        
+        valorPasado = self.ui.txtAfectado.text()
+        if valorPasado:
+            if '^' in valorPasado:
+                id = valorPasado.split('^')[1].strip()
+                nombre = valorPasado.split('^')[0].strip()
+                self.ui.txtAfectado.setText(nombre)
+                self.ui.txtIdAfectado.setText(id)
+            else:
+                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+                mi.exec_()
+        else:
+            self.ui.txtAfectado.setText(nombre)
+            self.ui.txtAfectado.setText(id)
  
 
     def llenarCombo(self):
