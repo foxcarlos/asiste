@@ -80,14 +80,16 @@ class ControlMainWindow(QtGui.QMainWindow):
         
     def autoCompletado(self, objeto, lista):
         '''
-        Parametro recibidos 2:
-        1-) tipo Obj con el nombre del objeto al cual se le va aplicar el 
-        autocompletado
-        2-) Tipo Lista, La lista que se desea mostrar en el autocompletado
-
         Este metodo permite iniciar el autocompletado de alguno de los textbox 
         o QlineEdit
-        '''       
+        
+        Ej: autoCompletado(self.lineEditNombre, ('Carlos', 'Nairesther', 'Paola', Carla))
+        
+        Parametro recibidos 2:
+        1-) tipo Obj QlineEdit con el nombre del objeto al cual se le va aplicar el 
+        autocompletado
+        2-) Tipo Lista, La lista que se desea mostrar en el autocompletado
+       '''       
         wordList = [f[0] for f in lista]
         lineEdit = objeto
         completer = QtGui.QCompleter(wordList, self)
