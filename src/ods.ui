@@ -285,6 +285,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
@@ -1082,6 +1085,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
   </widget>
   <widget class="QPushButton" name="btnCreadoPor">
    <property name="geometry">
@@ -1136,6 +1142,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
   </widget>
   <widget class="QLineEdit" name="txtReportadoPor">
    <property name="geometry">
@@ -1173,9 +1182,6 @@
      <height>23</height>
     </rect>
    </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
   </widget>
   <widget class="QLineEdit" name="txtIdAfectado">
    <property name="geometry">
@@ -1185,6 +1191,9 @@
      <width>41</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
    </property>
   </widget>
   <widget class="QDateTimeEdit" name="txtFechaModificacion">

@@ -34,6 +34,8 @@ class ControlMainWindow(QtGui.QMainWindow):
         #QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
         
         QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdCreadoPor)
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("returnPressed()"), self.quitarIdCreadoPor)
+
         QtCore.QObject.connect(self.ui.txtReportadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdReportadoPor)
         QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinished()"), self.quitarIdAfectado)
 
@@ -45,6 +47,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         '''
 
         self.main()
+
+    def focusInEvent(self,event):
+        QtGui.QMessageBox(QtGui.QMessageBox.Waring, 'Titulo', 'Hola')
 
     def probar(self):
         pass
@@ -68,9 +73,9 @@ class ControlMainWindow(QtGui.QMainWindow):
     def prepararAutoCompletar(self):
         pg = ConectarPG(self.cadconex)
 
-        regContactos0 = pg.ejecutar("Select nombre||' '||apellido||'^'||id as contacto from asiste.contactos order by nombre")
-        regContactos1 = pg.ejecutar("Select apellido||' '||nombre||'^'||id as contacto from asiste.contactos order by apellido")
-        regContactos2 = pg.ejecutar("Select cedula || ' '||nombre||' '||apellido||'^'||id as contacto from asiste.contactos order by cedula")
+        regContactos0 = pg.ejecutar("Select nombre||' '||apellido||','||id as contacto from asiste.contactos order by nombre")
+        regContactos1 = pg.ejecutar("Select apellido||' '||nombre||','||id as contacto from asiste.contactos order by apellido")
+        regContactos2 = pg.ejecutar("Select cedula || ','||nombre||' '||apellido||','||id as contacto from asiste.contactos order by cedula")
         
         regContactos = regContactos0 + regContactos1 + regContactos2
         
@@ -90,9 +95,9 @@ class ControlMainWindow(QtGui.QMainWindow):
         autocompletado
         2-) Tipo Lista, La lista que se desea mostrar en el autocompletado
        '''       
-        wordList = [f[0] for f in lista]
+        self.listaPalabras = [f[0] for f in lista]
         lineEdit = objeto
-        completer = QtGui.QCompleter(wordList, self)
+        completer = QtGui.QCompleter(self.listaPalabras, self)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         lineEdit.setCompleter(completer)
 
@@ -102,28 +107,37 @@ class ControlMainWindow(QtGui.QMainWindow):
         id = ''
         nombre = ''
         
+        valorId = self.ui.txtIdCreadoPor.text()
         valorPasado = self.ui.txtCreadoPor.text()
-        if valorPasado:
-            if '^' in valorPasado:
-                id = valorPasado.split('^')[1].strip()
-                nombre = valorPasado.split('^')[0].strip()
-                self.ui.txtCreadoPor.setText(nombre)
-                self.ui.txtIdCreadoPor.setText(id)
-                
-                font = QtGui.QFont()
-                font.setUnderline(True)
-                self.ui.txtCreadoPor.setFont(font)       
-            else:
-                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
-                mi.exec_()
-                font = QtGui.QFont()
-                font.setUnderline(False)
-                self.ui.txtCreadoPor.setFont(font)       
- 
-        else:
-            self.ui.txtCreadoPor.setText(nombre)
+        listaCod = valorPasado.split(',')
+        
+        if len(listaCod) == 1:
+            id = valorId
+            nombre = valorPasado
+
+        elif len(listaCod) == 2:
+            nombre = listaCod[0] 
+            id = listaCod[1]
+
+        elif len(listaCod) == 3:         
+            id = listaCod[2]
+            nombre = listaCod[1]
+        
+        conseguido = False
+        for f in self.listaPalabras:
+            if nombre in f.split(','):
+                conseguido = True
+
+        if conseguido:
             self.ui.txtIdCreadoPor.setText(id)
- 
+            self.ui.txtCreadoPor.setText(nombre)
+            self.ui.txtReportadoPor.setFocus()
+        else:
+            self.ui.txtIdCreadoPor.setText('')
+            self.ui.txtCreadoPor.setText('')
+            mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+            mi.exec_()
+
     def quitarIdReportadoPor(self):
         '''
         '''        
