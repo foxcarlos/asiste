@@ -36,10 +36,14 @@ COMMENT ON COLUMN asiste.estado.observacion IS 'Campo que permite dar un detalle
 
 -- DROP TABLE asiste.contactos;
 ##########################################################################
+-- Table: asiste.contactos
+
+-- DROP TABLE asiste.contactos;
+
 CREATE TABLE asiste.contactos
 (
   id serial NOT NULL, -- Campo autoincremental Id unico
-  del integer, -- Campo que permite saber si un registro fue eliminado, por defecto el valor es 0 que indica que no ha sido eliminado 1 indica que fue eliminado
+  del integer DEFAULT 0, -- Campo que permite saber si un registro fue eliminado, por defecto el valor es 0 que indica que no ha sido eliminado 1 indica que fue eliminado
   cedula integer NOT NULL, -- Campo que permite indicar la cedula de indentidad o cualquier ID unico para una persona, no se permiten valores Nulos
   nombre character varying(100) NOT NULL, -- Campo para indicar el nombre de la Persona
   apellido character varying(100) NOT NULL, -- Campo para indicar el apellido o apellidos de la persona
@@ -48,7 +52,11 @@ CREATE TABLE asiste.contactos
   telefono_oficina character varying(100), -- Campo para indicar el telefono de la oficina
   telefono_movil character varying(100), -- Campo para imndicar el telefono Celular o Movil
   tipo_contacto_id integer DEFAULT 0, -- Campo para almacenar el ID del tipo de Contacto. se relaciona con  la tabla tipo_contacto
-  ubicacion_id integer, -- Campo para colocar el ID de la Ubicacion, se relaciona con la tabla Ubicacion
+  observacion character varying(240),
+  departamento_id integer,
+  localidad_id integer,
+  ubicacion_id integer,
+  activo integer DEFAULT 0,
   CONSTRAINT contacto_id PRIMARY KEY (id )
 )
 WITH (
@@ -68,6 +76,105 @@ COMMENT ON COLUMN asiste.contactos.email IS 'Correo Electronico, no es obligator
 COMMENT ON COLUMN asiste.contactos.telefono_oficina IS 'Campo para indicar el telefono de la oficina';
 COMMENT ON COLUMN asiste.contactos.telefono_movil IS 'Campo para imndicar el telefono Celular o Movil';
 COMMENT ON COLUMN asiste.contactos.tipo_contacto_id IS 'Campo para almacenar el ID del tipo de Contacto. se relaciona con  la tabla tipo_contacto';
-COMMENT ON COLUMN asiste.contactos.ubicacion_id IS 'Campo para colocar el ID de la Ubicacion, se relaciona con la tabla Ubicacion';
 
+##########################################################################
+
+-- Table: asiste.departamento
+
+-- DROP TABLE asiste.departamento;
+
+CREATE TABLE asiste.departamento
+(
+  id serial NOT NULL,
+  del integer DEFAULT 0,
+  codigo character varying(10),
+  sym character varying(100),
+  observacion character varying(240),
+  activo integer DEFAULT 0,
+  CONSTRAINT departamento_idx PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE asiste.departamento
+  OWNER TO admhc;
+
+
+
+#################################################################################
+
+-- Table: asiste.estado
+
+-- DROP TABLE asiste.estado;
+
+CREATE TABLE asiste.estado
+(
+  id serial NOT NULL, -- Campo Autoincremental
+  del integer DEFAULT 0, -- Campo que indica si un registro es eliminado, por defecto tiene valor 0 que indica que no ha sido eliminado
+  sym character varying(100), -- Campo que describe el estado de un control
+  codigo character varying(10), -- Campo que permite colocarle un codigo manual y unico al estado
+  observacion character varying(240),
+  activo integer DEFAULT 0,
+  CONSTRAINT estado_id PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE asiste.estado
+  OWNER TO admhc;
+COMMENT ON TABLE asiste.estado
+  IS 'Tabla de Status de las Ordenes de Servicio';
+COMMENT ON COLUMN asiste.estado.id IS 'Campo Autoincremental';
+COMMENT ON COLUMN asiste.estado.del IS 'Campo que indica si un registro es eliminado, por defecto tiene valor 0 que indica que no ha sido eliminado';
+COMMENT ON COLUMN asiste.estado.sym IS 'Campo que describe el estado de un control';
+COMMENT ON COLUMN asiste.estado.codigo IS 'Campo que permite colocarle un codigo manual y unico al estado';
+
+########################################################################################################################################################
+
+-- Table: asiste.localidad
+
+-- DROP TABLE asiste.localidad;
+
+CREATE TABLE asiste.localidad
+(
+  id serial NOT NULL, -- Campo ID Autincremental
+  del integer DEFAULT 0,
+  codigo character varying(10),
+  sym character varying(100),
+  observacion character varying(240),
+  activo integer DEFAULT 0,
+  CONSTRAINT localidad_idx PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE asiste.localidad
+  OWNER TO admhc;
+COMMENT ON COLUMN asiste.localidad.id IS 'Campo ID Autincremental';
+
+##########################################################################################################################################################
+
+-- Table: asiste.ubicacion
+
+-- DROP TABLE asiste.ubicacion;
+
+CREATE TABLE asiste.ubicacion
+(
+  id serial NOT NULL,
+  del integer DEFAULT 0,
+  codigo character varying(10),
+  sym character varying(100),
+  observacion character varying(240),
+  localidad_id integer NOT NULL,
+  activo integer DEFAULT 0,
+  CONSTRAINT ubiccion_idx PRIMARY KEY (id ),
+  CONSTRAINT localidad_fk FOREIGN KEY (localidad_id)
+      REFERENCES asiste.localidad (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE asiste.ubicacion
+  OWNER TO admhc;
 
