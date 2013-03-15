@@ -28,30 +28,36 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.ui.setupUi(self)
 
         '''
-        Aqui se conectan todos los objetos con sus slot:
-
-        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdCreadoPor)
+        Aqui se conectan todos los objetos con sus slot
         '''
+        
+        #QtCore.QObject.connect(self.ui.btnCombo, QtCore.SIGNAL("clicked()"), self.mostrar)
+        
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdCreadoPor)
+        QtCore.QObject.connect(self.ui.txtCreadoPor, QtCore.SIGNAL("returnPressed()"), self.quitarIdCreadoPor)
 
-        parId1 = self.ui.txtIdCreadoPor
-        parText1 = self.ui.txtCreadoPor
-        parFoco1 = self.ui.txtReportadoPor
-        parText1.editingFinished.connect(lambda: self.quitarId(parId1, parText1, parFoco1))
-        #parText1.returnPressed.connect(lambda: self.quitarId(parId1, parText1, parFoco1))
- 
-        parId2 = self.ui.txtIdReportadoPor
-        parText2 = self.ui.txtReportadoPor
-        parFoco2 = self.ui.txtAfectado
-        parText2.editingFinished.connect(lambda: self.quitarId(parId2, parText2, parFoco2))
-        #parText2.returnPressed.connect(lambda: self.quitarId(parId2, parText2, parFoco2))
+        QtCore.QObject.connect(self.ui.txtReportadoPor, QtCore.SIGNAL("editingFinished()"), self.quitarIdReportadoPor)
+        QtCore.QObject.connect(self.ui.txtReportadoPor, QtCore.SIGNAL("returnPressed()"), self.quitarIdReportadoPor)
 
-        parId3 = self.ui.txtIdAfectado
-        parText3 = self.ui.txtAfectado
-        parFoco3 = self.ui.txtIncidente
-        parText3.editingFinished.connect(lambda: self.quitarId(parId3, parText3, parFoco3))
-        #parText3.returnPressed.connect(lambda: self.quitarId(parId3, parText3, parFoco3))
+        #QtCore.QObject.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinished()"), self.quitarId)
+        self.connect(self.ui.txtAfectado, QtCore.SIGNAL("editingFinished()"), self.update_label)
+        self.emit(QtCore.SIGNAL("editingFinished"), "important", "information")
 
         self.main()
+
+    def update_label(value1, value2):
+        x = value1 + " " + value2
+        print x
+
+    def quitarElId(self):
+        QtCore.QObject.emit(QtCore.SIGNAL("editingFinished()"), 3)
+        #self.emit(QtCore.SIGNAL("returnPressed()"), 3)
+
+    def focusInEvent(self,event):
+        QtGui.QMessageBox(QtGui.QMessageBox.Waring, 'Titulo', 'Hola')
+
+    def probar(self):
+        pass
 
     def main(self):
         '''
@@ -68,7 +74,6 @@ class ControlMainWindow(QtGui.QMainWindow):
         self.registros = []
         self.llenarCombo()
         self.prepararAutoCompletar()
-        self.ui.txtCreadoPor.setFocus()
         
     def prepararAutoCompletar(self):
         pg = ConectarPG(self.cadconex)
@@ -101,12 +106,103 @@ class ControlMainWindow(QtGui.QMainWindow):
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         lineEdit.setCompleter(completer)
 
-    def quitarId(self, objeto1, objeto2, objeto3):
+    def quitarIdCreadoPor(self):
+        '''
+        '''        
+        id = ''
+        nombre = ''
+        
+        #objId = self.ui.txtIdCreadoPor
+        #objTexto = self.ui.txtCreadoPor
+
+        valorId = self.ui.txtIdCreadoPor.text()
+        valorPasado = self.ui.txtCreadoPor.text()
+        listaCod = valorPasado.split(',')
+        
+        if len(listaCod) == 1:
+            id = valorId
+            nombre = valorPasado
+
+        elif len(listaCod) == 2:
+            nombre = listaCod[0] 
+            id = listaCod[1]
+
+        elif len(listaCod) == 3:         
+            id = listaCod[2]
+            nombre = listaCod[1]
+        
+        conseguido = False
+        for f in self.listaPalabras:
+            if nombre in f.split(','):
+                conseguido = True
+
+        if conseguido:
+            self.ui.txtIdCreadoPor.setText(id)
+            self.ui.txtCreadoPor.setText(nombre)
+            self.ui.txtReportadoPor.setFocus()
+        else:
+            self.ui.txtIdCreadoPor.setText('')
+            self.ui.txtCreadoPor.setText('')
+            mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+            mi.exec_()
+
+    def quitarIdReportadoPor(self):
         '''
         '''
-        objId = objeto1
-        objTexto = objeto2
-        objFoco = objeto3
+
+        id = ''
+        nombre = ''
+        
+        objId = self.ui.txtIdReportadoPor
+        objTexto = self.ui.txtReportadoPor
+
+        valorId = objId.text()
+        valorPasado = objTexto.text()
+        listaCod = valorPasado.split(',')
+        
+        if len(listaCod) == 1:
+            id = valorId
+            nombre = valorPasado
+
+        elif len(listaCod) == 2:
+            nombre = listaCod[0] 
+            id = listaCod[1]
+
+        elif len(listaCod) == 3:         
+            id = listaCod[2]
+            nombre = listaCod[1]
+        
+        conseguido = False
+        for f in self.listaPalabras:
+            if nombre in f.split(','):
+                conseguido = True
+
+        if conseguido:
+            objId.setText(id)
+            objTexto.setText(nombre)
+            self.ui.txtAfectado.setFocus()
+        else:
+            objId.setText('')
+            objTexto.setText('')
+            mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+            mi.exec_()
+
+    def quitarId(caso):
+        '''
+        '''
+        print caso
+
+        if caso == 1:  # CreadoPor
+            objId = self.ui.txtIdCreadoPor
+            objTexto = self.ui.txtCreadoPor
+
+        elif caso == 2:  # ReportadoPor
+            objId = self.ui.txtIdCreadoPor
+            objTexto = self.ui.txtCreadoPor
+
+        elif caso == 3:  # Afectado
+            objId = self.ui.txtIdAfectado
+            objTexto = self.ui.txtAfectado
 
         id = ''
         nombre = ''
@@ -115,34 +211,34 @@ class ControlMainWindow(QtGui.QMainWindow):
         valorPasado = objTexto.text()
         listaCod = valorPasado.split(',')
         
-        if valorPasado:
-            if len(listaCod) == 1:
-                id = valorId
-                nombre = valorPasado
-    
-            elif len(listaCod) == 2:
-                nombre = listaCod[0] 
-                id = listaCod[1]
-    
-            elif len(listaCod) == 3:         
-                id = listaCod[2]
-                nombre = listaCod[1]
-               
-            conseguido = False
-            for f in self.listaPalabras:
-                if nombre in f.split(','):
-                    conseguido = True
-    
-            if conseguido:
-                objId.setText(id)
-                objTexto.setText(nombre)
-                objFoco.setFocus()
-            else:
-                objId.setText('')
-                objTexto.setText('')
-                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Mensage de Sistema *** Atencion *** ', 
-                        'El contacto ingresado no Existe, Favor verifique el conactacto')
-                mi.exec_()
+        if len(listaCod) == 1:
+            id = valorId
+            nombre = valorPasado
+
+        elif len(listaCod) == 2:
+            nombre = listaCod[0] 
+            id = listaCod[1]
+
+        elif len(listaCod) == 3:         
+            id = listaCod[2]
+            nombre = listaCod[1]
+        
+        
+        conseguido = True
+        for f in self.listaPalabras:
+            if nombre in f.split(','):
+                conseguido = True
+
+        if conseguido:
+            objId.setText(id)
+            objTexto.setText(nombre)
+            self.ui.txtAfectado.setFocus()
+        else:
+            objId.setText('')
+            objTexto.setText('')
+            mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...', 'No Existe el Contacto')
+            mi.exec_()
+
 
     def llenarCombo(self):
         '''

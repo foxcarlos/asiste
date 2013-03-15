@@ -77,7 +77,11 @@
   <property name="windowTitle">
    <string>Reporte de Incidentes</string>
   </property>
-  <widget class="QLineEdit" name="lineEdit_9">
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../img/Asiste-512.png</normaloff>../img/Asiste-512.png</iconset>
+  </property>
+  <widget class="QLineEdit" name="txtIncidente">
    <property name="geometry">
     <rect>
      <x>350</x>
@@ -121,6 +125,43 @@
      <width>1081</width>
      <height>83</height>
     </rect>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>254</red>
+         <green>230</green>
+         <blue>150</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>254</red>
+         <green>230</green>
+         <blue>150</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>237</red>
+         <green>250</green>
+         <blue>255</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -218,7 +259,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>290</y>
+     <y>300</y>
      <width>111</width>
      <height>16</height>
     </rect>
@@ -241,10 +282,47 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>310</y>
+     <y>320</y>
      <width>1081</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>254</red>
+         <green>230</green>
+         <blue>150</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>254</red>
+         <green>230</green>
+         <blue>150</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>237</red>
+         <green>250</green>
+         <blue>255</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_10">
@@ -276,7 +354,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_13">
+  <widget class="QLineEdit" name="txtIdIncidente">
    <property name="geometry">
     <rect>
      <x>310</x>
@@ -1263,6 +1341,19 @@
     <string>Fecha Cierre</string>
    </property>
   </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>280</y>
+     <width>1081</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>btnNuevo</tabstop>
@@ -1282,8 +1373,8 @@
   <tabstop>btnReportadoPor</tabstop>
   <tabstop>txtIdAfectado</tabstop>
   <tabstop>btnAfectado</tabstop>
-  <tabstop>lineEdit_13</tabstop>
-  <tabstop>lineEdit_9</tabstop>
+  <tabstop>txtIdIncidente</tabstop>
+  <tabstop>txtIncidente</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>lineEdit_16</tabstop>
   <tabstop>lineEdit_10</tabstop>
