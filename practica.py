@@ -8,7 +8,20 @@ class miQLineEdit(QtGui.QLineEdit):
         super(miQLineEdit, self).__init__()
         self.foreColor()
         self.backColor()
-    
+
+    def autoCompletado(self, lista):
+        '''
+        Este metodo permite iniciar el autocompletado en el QlineEdit.
+        Ej: autoCompletado([('Carlos',),  ('Nairesther',), ( 'Paola',), ( Carla,)])
+        
+        Parametro recibidos 1:
+        1-) Tipo Lista, La lista que se desea mostrar en el autocompletado
+       '''       
+        self.listaPalabras = [f[0] for f in lista]
+        completer = QtGui.QCompleter(self.listaPalabras, self)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.setCompleter(completer)
+
     def infocus():
         pass
 
@@ -107,7 +120,8 @@ class ui_(QtGui.QWidget):
         #Campo ID
         self.hlId = QtGui.QHBoxLayout()
         self.lblId = QtGui.QLabel('ID:')
-        self.txtId = miQLineEdit()       
+        self.txtId = miQLineEdit()
+        self.txtId.autoCompletado([('Carlos',), ( 'Carla Patricia',), ( 'Camen Diaz',)])
         self.spacerId = QtGui.QSpacerItem(500, 20)
         self.hlId.addWidget(self.txtId)
         self.hlId.addItem(self.spacerId)
@@ -272,9 +286,155 @@ class ui_(QtGui.QWidget):
         self.setGeometry(0, 0, 1091, 496)
 
         self.setLayout(self.gl)
+        
+        self.establecerOrder()
+
+    def establecerOrder(self):
+        '''
+        Metodo que permite establecer el orden a los objetos
+        dentro de Form
+        '''
+        #Botones Superiores
+        self.setTabOrder(self.btnNuevo, self.btnModificar)
+        self.setTabOrder(self.btnModificar, self.btnEliminar)
+        self.setTabOrder(self.btnEliminar, self.btnDeshacer)
+        self.setTabOrder(self.btnDeshacer, self.btnLimpiar)
+        self.setTabOrder(self.btnLimpiar, self.btnExportar)
+        self.setTabOrder(self.btnExportar, self.btnSalir)
+        
+        #LineEdit 
+        self.setTabOrder(self.btnSalir, self.txtId)
+        self.setTabOrder(self.txtId, self.txtCedula)
+        self.setTabOrder(self.txtCedula, self.txtCodigo)
+        self.setTabOrder(self.txtCodigo, self.txtNombre)
+        self.setTabOrder(self.txtNombre, self.txtApellido)
+        self.setTabOrder(self.txtApellido, self.txtUsuarioRed)
+        self.setTabOrder(self.txtUsuarioRed, self.cbxTipoContacto)
+        self.setTabOrder(self.cbxTipoContacto, self.txtTelefOficina)
+        self.setTabOrder(self.txtTelefOficina, self.txtTelefMovil)
+        self.setTabOrder(self.txtTelefMovil, self.txtEmail)
+        self.setTabOrder(self.txtEmail, self.txtDepartamento)
+        self.setTabOrder(self.txtDepartamento, self.txtLocalidad)
+        self.setTabOrder(self.txtLocalidad, self.txtUbicacion)
+        self.setTabOrder(self.txtUbicacion, self.txtObservacion)
+
+    def inicio(self):
+        '''
+        '''
+        host,  db, user, clave = fc.opcion_consultar('POSTGRESQL')
+        self.cadconex = "host='%s' dbname='%s' user='%s' password='%s'" % (host[1], db[1], user[1], clave[1])
+
+        self.iniciarForm()
+        self.Buscar()
+
+    def iniciarForm(self):
+        '''
+        '''
+
+        #Activar la Busqueda al escribir el los textbox
+        self.activarBuscar = True
+
+        #Activar Bandera para saber cuando el boton Nuevo funciona como Boton Nuevo
+        self.banderaNuevo = True
+        self.banderaModificar = True
+
+        #Deshabilitar y Habilitar botones
+        self.btnNuevo.setEnabled(True)
+        self.btnModificar.setEnabled(False)
+        self.btnEliminar.setEnabled(False)
+        self.btnLimpiar.setEnabled(True)
+        self.btnDeshacer.setEnabled(False)
+        self.btnSalir.setEnabled(True)
+
+        #Cambiar el Caption o Text del Boton
+        self.btnNuevo.setText("&Nuevo")
+        self.btnModificar.setText('&Modificar')
+
+        #Cambiar icono del Boton Nuevo por Nuevo
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("img/30px-Crystal_Clear_app_List_manager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnNuevo.setIcon(icon1)
+        
+        #Cambiar icono del Boton Modificar por Modificar
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("img/40px-Crystal_Clear_app_kedit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnModificar.setIcon(icon2)
+
+        if sys.platform == 'win32':
+            self.btnNuevo.setIconSize(QtCore.QSize(45, 45))
+            self.btnModificar.setIconSize(QtCore.QSize(35, 35))
+            self.btnEliminar.setIconSize(QtCore.QSize(35, 35))
+            self.btnLimpiar.setIconSize(QtCore.QSize(35, 35))
+            self.btnDeshacer.setIconSize(QtCore.QSize(35, 35))
+            self.btnSalir.setIconSize(QtCore.QSize(35, 35))
+
+    def Buscar(self):
+        '''
+        Metodo que se utiliza para realizar la busqueda segun lo que
+        ingresa el usuario en las cajas de texto.
+        '''
+        
+        if self.activarBuscar:
+            cadsq = self.armar_select()
+            lista = self.obtener_datos(cadsq)
+            self.PrepararTableWidget(len(lista))  # Configurar el tableWidget
+            self.InsertarRegistros(lista)  # Insertar los Registros en el TableWidget
+        
+    def armar_select(self):
+        '''
+        Metodo que permite armar la consulta select a medica que el usuario
+        va tecleando en los textbox
+        Parametro devuelto(1) String con la cadena sql de busqueda    
+        '''
+
+        #Campturar lo que tienne los LineEdit
+        lcId = self.txtId.text()
+        lcCedula = self.txtCedula.text()
+        lcCodigo = self.txtCodigo.text()
+        lcNombre = self.txtNombre.text()
+        lcApellido = self.txtApellido.text()
+        lcUsuarioRed = self.txtusuarioRed.text()
+        lcTipoContacto = self.cbxTipoContacto.currentText()
+        lcTelefOficina = self.txtTelefOficina.text()
+        lcTelefMovil = self.txtTelefMovil.text()
+        lcDepartamento = self.txtDepartamento.text()
+        lcLocalidad = self.txtLocalidad.text()
+        lcUbicacion = self.txtUbicacion.text()
+        lcObservacion = self.txtObservacion.text()
+
+        vId = " id = {0} AND ".format(lcId) if lcId else ''
+        vCed = " cedula = {0} AND ".format(lcCedula) if lcCedula else ''
 
 
-if __name__ == '__main__':
+        valorNombre =  "upper(nombre) like '%%%s%%' AND " % (lcNombre.upper()) if lcNombre else ''
+        valorDepartamento =  " upper(departamento) like '%%%s%%' AND " % (lcDepartamento.upper()) if lcDepartamento else ''
+        valorTelefono = " telefono like '%%%s%%' AND " % (lcTelefono) if lcTelefono else ''
+
+        campos = valorNombre + valorDepartamento + valorTelefono
+        cadenaSql = 'select id,nombre,departamento,telefono from agenda where ' + campos + 'del = 0 order by nombre'
+        return cadenaSql
+
+    def obtener_datos(self, cadena_pasada):
+        '''
+        Ejecuta la Consulta SQl a el servidor PostGreSQL segun la cadena SQL
+        pasada como parametro
+        parametros recibidos: (1) String
+        parametros devueltos: (1) Lista
+
+        Ej: obtener_datos('select *from tabla where condicion')
+        '''
+
+        try:
+            pg = ConectarPG(self.cadconex)
+            self.registros = pg.ejecutar(cadena_pasada)
+            pg.cur.close()
+            pg.conn.close()
+        except:
+            self.registros = []
+        return self.registros
+
+
+if == '__main__':
     app = QtGui.QApplication(sys.argv)
     forma = ui_()
     forma.show()

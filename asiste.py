@@ -78,6 +78,7 @@ class ControlMainWindow(QtGui.QMainWindow):
         regContactos2 = pg.ejecutar("Select cedula || ','||nombre||' '||apellido||','||id as contacto from asiste.contactos order by cedula")
         
         regContactos = regContactos0 + regContactos1 + regContactos2
+        print regContactos
         
         self.autoCompletado(self.ui.txtCreadoPor, regContactos)
         self.autoCompletado(self.ui.txtReportadoPor, regContactos)
