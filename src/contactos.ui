@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1032</width>
+    <width>1070</width>
     <height>616</height>
    </rect>
   </property>
@@ -138,21 +138,40 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="4">
+   <item row="1" column="0" rowspan="2" colspan="4">
     <widget class="Line" name="line">
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="2" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Preferred</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="lblId">
      <property name="text">
       <string>ID</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLineEdit" name="lineEdit"/>
@@ -163,7 +182,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Preferred</enum>
+        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -175,18 +194,34 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="3" rowspan="14">
-    <widget class="QTableWidget" name="tableWidget"/>
+   <item row="3" column="3" rowspan="14">
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+    </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="lblCedula">
      <property name="text">
       <string>Cedula</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>20</number>
+     </property>
      <item>
       <widget class="QLineEdit" name="lineEdit_2"/>
      </item>
@@ -205,7 +240,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="2">
+   <item row="4" column="2">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -221,14 +256,14 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="lblCodigp">
      <property name="text">
       <string>Codigo</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QLineEdit" name="lineEdit_3"/>
@@ -248,42 +283,42 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="lblNombre">
      <property name="text">
       <string>Nombre</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QLineEdit" name="lineEdit_4"/>
      </item>
     </layout>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="lblApellido">
      <property name="text">
       <string>Apellido</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
       <widget class="QLineEdit" name="lineEdit_5"/>
      </item>
     </layout>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="lblUsuarioRed">
      <property name="text">
       <string>Usuario de Red</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QLineEdit" name="lineEdit_6"/>
@@ -303,14 +338,14 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="lblTipoContacto">
      <property name="text">
       <string>Tipo Contacto</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="9" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
       <widget class="QComboBox" name="comboBox"/>
@@ -333,14 +368,14 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QLabel" name="lblTelfOficina">
      <property name="text">
       <string>Telef. Oficina</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="10" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_9">
      <item>
       <widget class="QLineEdit" name="lineEdit_8"/>
@@ -360,14 +395,14 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <widget class="QLabel" name="lblMovil">
      <property name="text">
       <string>Telef. Movil</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="11" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_10">
      <item>
       <widget class="QLineEdit" name="lineEdit_9"/>
@@ -387,14 +422,14 @@
      </item>
     </layout>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="lblEmail">
      <property name="text">
       <string>Email</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="12" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_11">
      <item>
       <widget class="QLineEdit" name="lineEdit_10"/>
@@ -414,14 +449,14 @@
      </item>
     </layout>
    </item>
-   <item row="12" column="0">
+   <item row="13" column="0">
     <widget class="QLabel" name="lblDpto">
      <property name="text">
       <string>Departamento</string>
      </property>
     </widget>
    </item>
-   <item row="12" column="1">
+   <item row="13" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_12">
      <item>
       <widget class="QLineEdit" name="lineEdit_11"/>
@@ -452,14 +487,14 @@
      </item>
     </layout>
    </item>
-   <item row="13" column="0">
+   <item row="14" column="0">
     <widget class="QLabel" name="lblLocalidad">
      <property name="text">
       <string>Localidad</string>
      </property>
     </widget>
    </item>
-   <item row="13" column="1">
+   <item row="14" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_13">
      <item>
       <widget class="QLineEdit" name="lineEdit_12"/>
@@ -490,14 +525,14 @@
      </item>
     </layout>
    </item>
-   <item row="14" column="0">
+   <item row="15" column="0">
     <widget class="QLabel" name="lblUbicacion">
      <property name="text">
       <string>Ubicacion</string>
      </property>
     </widget>
    </item>
-   <item row="14" column="1">
+   <item row="15" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_14">
      <item>
       <widget class="QLineEdit" name="lineEdit_13"/>
@@ -528,14 +563,14 @@
      </item>
     </layout>
    </item>
-   <item row="15" column="0">
+   <item row="16" column="0">
     <widget class="QLabel" name="lblObservacion">
      <property name="text">
       <string>Observacion</string>
      </property>
     </widget>
    </item>
-   <item row="15" column="1">
+   <item row="16" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_15">
      <item>
       <widget class="QLineEdit" name="lineEdit_14"/>
