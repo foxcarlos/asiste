@@ -2,6 +2,13 @@
 
 import sys
 from PyQt4 import QtCore, QtGui
+from rutinas.varias import *
+import os
+
+ruta_arch_conf = os.path.dirname(sys.argv[0])
+archivo_configuracion = os.path.join(ruta_arch_conf, 'config.conf')
+fc = FileConfig(archivo_configuracion)
+
 
 class miQLineEdit(QtGui.QLineEdit):
     def __init__(self):
@@ -288,6 +295,8 @@ class ui_(QtGui.QWidget):
         self.setLayout(self.gl)
         
         self.establecerOrder()
+        self.inicio()
+
 
     def establecerOrder(self):
         '''
@@ -393,7 +402,7 @@ class ui_(QtGui.QWidget):
         lcCodigo = self.txtCodigo.text()
         lcNombre = self.txtNombre.text()
         lcApellido = self.txtApellido.text()
-        lcUsuarioRed = self.txtusuarioRed.text()
+        lcUsuarioRed = self.txtUsuarioRed.text()
         lcTipoContacto = self.cbxTipoContacto.currentText()
         lcTelefOficina = self.txtTelefOficina.text()
         lcTelefMovil = self.txtTelefMovil.text()
@@ -404,14 +413,20 @@ class ui_(QtGui.QWidget):
 
         vId = " id = {0} AND ".format(lcId) if lcId else ''
         vCed = " cedula = {0} AND ".format(lcCedula) if lcCedula else ''
+        vCod = "upper(codigo)  = '{0}' AND ".format(lcCodigo.upper()) if lcCodigo else ''
+        vNom = "upper(nombre) like '%{0}%' AND ".format(lcNombre.upper()) if lcNombre else ''
+        vApe = "upper(apellido) like '%{0}%' AND ".format(lcApellido.upper()) if lcApellido else ''
+        vUsu = "upper(usuario_red) like '%{0}%' AND ".format(lcUsuarioRed.upper()) if lcUsuarioRed else ''
+        vTipc = "upper(tipo_contacto) like '%{0}%' AND ".format(lcTipoContacto.upper()) if lcTipoContacto else ''
+        vTlfO = "telefono_oficina like '%{0}%' AND ".format(lcTelefOficina) if lcTelefOficina else ''
+        vTlfM = "telefono_movil like '%{0}%' AND ".format(lcTelefMovil) if lcTelefMovil else ''
+        vDpto = "departamento_id like '%{0}%' AND ".format(lcDepartamento) if lcDepartamento else ''
+        vLoc = "localidad_id like '%{0}%' AND ".format(lcLocalidad) if lcLocalidad else ''
+        vUbi = "ubicacion like '%{0}%' AND ".format(lcUbicacion) if lcUbicacion else ''
+        vObs = "upper(observacion) like '%{0}%' AND ".format(lcObservacion.upper()) if lcObservacion else ''
 
-
-        valorNombre =  "upper(nombre) like '%%%s%%' AND " % (lcNombre.upper()) if lcNombre else ''
-        valorDepartamento =  " upper(departamento) like '%%%s%%' AND " % (lcDepartamento.upper()) if lcDepartamento else ''
-        valorTelefono = " telefono like '%%%s%%' AND " % (lcTelefono) if lcTelefono else ''
-
-        campos = valorNombre + valorDepartamento + valorTelefono
-        cadenaSql = 'select id,nombre,departamento,telefono from agenda where ' + campos + 'del = 0 order by nombre'
+        campos = vId + vCed + vCod + vNom + vApe + vUsu + vTipc + vTlfO + vTlfM + vDpto + vLoc + vUbi + vObs
+        cadenaSql = "select * from asiste.contactos where {0} del = 0 order by apellido, nombre".format(campos)
         return cadenaSql
 
     def obtener_datos(self, cadena_pasada):
@@ -423,7 +438,7 @@ class ui_(QtGui.QWidget):
 
         Ej: obtener_datos('select *from tabla where condicion')
         '''
-
+        
         try:
             pg = ConectarPG(self.cadconex)
             self.registros = pg.ejecutar(cadena_pasada)
@@ -432,9 +447,73 @@ class ui_(QtGui.QWidget):
         except:
             self.registros = []
         return self.registros
+    
+    def PrepararTableWidget(self, CantidadReg=0, Columnas=0):
+        '''
+        Parametros pasados (2) (CantidadReg: Entero) y (Columnas :Lista)
+        Ej: PrepararTableWidget(50, ['ID', 'FECHA', 'PUERTO'])
+
+        Meotodo que permite asignar y ajustar  las columnas que tendra el tablewidget
+        basados en la cantidad de conlumnas y la cantidad de registros que le son
+        pasados como parametro
+        '''
+
+        palette = QtGui.QPalette()
+        brush = QtGui.QBrush(QtGui.QColor(245, 244, 226))
+        brush.setStyle(QtCore.Qt.SolidPattern)
+        palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Base, brush)
+
+        brush = QtGui.QBrush(QtGui.QColor(254, 206, 45))
+        brush.setStyle(QtCore.Qt.SolidPattern)
+        palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Highlight, brush)
+
+        brush = QtGui.QBrush(QtGui.QColor(255, 255, 203))
+        brush.setStyle(QtCore.Qt.SolidPattern)
+        palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.AlternateBase, brush)
+
+        lista = CantidadReg
+        self.ui.tableWidget.setColumnCount(len(Columnas))
+        self.ui.tableWidget.setRowCount(len(lista))
+
+        #Armar Cabeceras de las Columnas
+        cabecera = []
+        for f in Columnas:
+            nombreCampo = f[0]
+            cabecera.append(nombreCampo)
+
+        for f in Columnas:
+            posicion = Columnas.index(f)
+            nombreCampo = f[0]
+            ancho = f[1]
+            self.ui.tableWidget.horizontalHeader().resizeSection(posicion, ancho)
+
+        self.ui.tableWidget.setPalette(palette)
+        self.ui.tableWidget.setAutoFillBackground(False)
+        self.ui.tableWidget.setAlternatingRowColors(True)
+        self.ui.tableWidget.setHorizontalHeaderLabels(cabecera)
+
+        self.ui.tableWidget.setSelectionMode(QtGui.QTableWidget.SingleSelection)
+        self.ui.tableWidget.setSelectionBehavior(QtGui.QTableView.SelectRows)
+
+        #ciudades = ["Valencia","Maracay","Barquisimeto","Merida","Caracas"]
+        #self.combo.addItems(ciudades)
+        #deshabilitar()
+    
+    def InsertarRegistros(self, cursor):
+        '''
+        Metodo que permite asignarle registros al tablewidget
+        parametros recibitos (1) Tipo (Lista)
+        Ej:RowSource(['0', 'Carlos', 'Garcia'], ['1', 'Nairesther', 'Gomez'])
+        '''
+
+        ListaCursor = cursor
+        for pos, fila in enumerate(ListaCursor):
+            for posc, columna in enumerate(fila):
+                self.ui.tableWidget.setItem(pos, posc, QtGui.QTableWidgetItem(str(columna)))
 
 
-if == '__main__':
+
+if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     forma = ui_()
     forma.show()
