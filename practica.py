@@ -462,10 +462,10 @@ class ui_(QtGui.QWidget):
         vTipc = "upper(c.tipo_contacto) like '%{0}%' AND ".format(lcTipoContacto.toUpper()) if lcTipoContacto else ''
         vTlfO = "c.telefono_oficina like '%{0}%' AND ".format(lcTelefOficina) if lcTelefOficina else ''
         vTlfM = "c.telefono_movil like '%{0}%' AND ".format(lcTelefMovil) if lcTelefMovil else ''
-        vEma = "c.email like '%{0}%' AND ".format(lcEmail.toUpper()) if lcEmail else ''
-        vDpto = "c.departamento_id like '%{0}%' AND ".format(lcDepartamento) if lcDepartamento else ''
-        vLoc = "c.localidad_id like '%{0}%' AND ".format(lcLocalidad) if lcLocalidad else ''
-        vUbi = "c.ubicacion like '%{0}%' AND ".format(lcUbicacion.toUpper()) if lcUbicacion else ''
+        vEma = "upper(c.email) like '%{0}%' AND ".format(lcEmail.toUpper()) if lcEmail else ''
+        vDpto = "upper(d.sym) like '%{0}%' AND ".format(lcDepartamento.toUpper()) if lcDepartamento else ''
+        vLoc = "upper(l.sym) like '%{0}%' AND ".format(lcLocalidad.toUpper()) if lcLocalidad else ''
+        vUbi = "upper(u.sym) like '%{0}%' AND ".format(lcUbicacion.toUpper()) if lcUbicacion else ''
         vObs = "upper(c.observacion) like '%{0}%' AND ".format(lcObservacion.toUpper()) if lcObservacion else ''
 
         campos = vId + vCed + vCod + vNom + vApe + vUsu + vTipc + vTlfO + vTlfM + vEma + vDpto + vLoc + vUbi + vObs
