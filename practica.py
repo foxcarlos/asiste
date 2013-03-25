@@ -177,7 +177,6 @@ class ui_(QtGui.QWidget):
         self.hlTipoContacto.addWidget(self.cbxTipoContacto)
         self.hlTipoContacto.addItem(self.spacerTipoContacto)
 
-
         #Campo Telef Oficina
         self.lblTelefOficina = QtGui.QLabel('Telef. Oficina')
         self.txtTelefOficina = miQLineEdit()
@@ -294,6 +293,28 @@ class ui_(QtGui.QWidget):
 
         self.setLayout(self.gl)
         
+        #Hasta Aqui:
+        #Eventos de los Botones.
+        self.connect(self.btnLimpiar, QtCore.SIGNAL("clicked()"), self.limpiarText)
+
+        #Eventos de los QLineEdit
+        self.connect(self.txtId, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtCedula, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtCodigo, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtNombre, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtApellido, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtUsuarioRed, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        #self.connect(self.txtTipoContacto, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtTelefOficina, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtTelefMovil, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtEmail, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtDepartamento, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtLocalidad, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtUbicacion, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtObservacion, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+
+        QtCore.QObject.connect(self.tableWidget, QtCore.SIGNAL("itemClicked(QTableWidgetItem*)"), self.clickEnTabla)
+
         self.establecerOrder()
         self.inicio()
 
@@ -381,12 +402,31 @@ class ui_(QtGui.QWidget):
         '''
         Metodo que se utiliza para realizar la busqueda segun lo que
         ingresa el usuario en las cajas de texto.
-        '''
-        
+        ''' 
+        #Crear aqui la Cabecera del TableWidget con el Nombre del campo y el Ancho
+        listaCabecera = [('Id' ,40),
+                ('Cedula' ,75),
+                ('Cod' ,40 ),
+                ('Nombre' , 100),
+                ('Apellido' ,100),
+                ('Usuario_red' ,85),
+                ('Email' , 100),
+                ('Telf Ofic' , 85),
+                ('Telf Movil' , 95),
+                ('Tipo Contacto Id' ,95),
+                ('Observacion' , 150),
+                ('Dpto Id' , 80),
+                ('Departamento', 170),
+                ('Loc Id' , 80),
+                ('Localidad', 170),
+                ('Ubic Id' , 80),
+                ('Ubicacion', 170),
+                ('Foto', 170 )]
+
         if self.activarBuscar:
             cadsq = self.armar_select()
             lista = self.obtener_datos(cadsq)
-            self.PrepararTableWidget(len(lista))  # Configurar el tableWidget
+            self.PrepararTableWidget(len(lista), listaCabecera)  # Configurar el tableWidget
             self.InsertarRegistros(lista)  # Insertar los Registros en el TableWidget
         
     def armar_select(self):
@@ -406,27 +446,46 @@ class ui_(QtGui.QWidget):
         lcTipoContacto = self.cbxTipoContacto.currentText()
         lcTelefOficina = self.txtTelefOficina.text()
         lcTelefMovil = self.txtTelefMovil.text()
+        lcEmail = self.txtEmail.text()
         lcDepartamento = self.txtDepartamento.text()
         lcLocalidad = self.txtLocalidad.text()
         lcUbicacion = self.txtUbicacion.text()
         lcObservacion = self.txtObservacion.text()
+        #print 'El Nombre es:%s' % (self.txtNombre.text().toUpper())
 
-        vId = " id = {0} AND ".format(lcId) if lcId else ''
-        vCed = " cedula = {0} AND ".format(lcCedula) if lcCedula else ''
-        vCod = "upper(codigo)  = '{0}' AND ".format(lcCodigo.upper()) if lcCodigo else ''
-        vNom = "upper(nombre) like '%{0}%' AND ".format(lcNombre.upper()) if lcNombre else ''
-        vApe = "upper(apellido) like '%{0}%' AND ".format(lcApellido.upper()) if lcApellido else ''
-        vUsu = "upper(usuario_red) like '%{0}%' AND ".format(lcUsuarioRed.upper()) if lcUsuarioRed else ''
-        vTipc = "upper(tipo_contacto) like '%{0}%' AND ".format(lcTipoContacto.upper()) if lcTipoContacto else ''
-        vTlfO = "telefono_oficina like '%{0}%' AND ".format(lcTelefOficina) if lcTelefOficina else ''
-        vTlfM = "telefono_movil like '%{0}%' AND ".format(lcTelefMovil) if lcTelefMovil else ''
-        vDpto = "departamento_id like '%{0}%' AND ".format(lcDepartamento) if lcDepartamento else ''
-        vLoc = "localidad_id like '%{0}%' AND ".format(lcLocalidad) if lcLocalidad else ''
-        vUbi = "ubicacion like '%{0}%' AND ".format(lcUbicacion) if lcUbicacion else ''
-        vObs = "upper(observacion) like '%{0}%' AND ".format(lcObservacion.upper()) if lcObservacion else ''
+        vId = " c.id = {0} AND ".format(lcId) if lcId else ''
+        vCed = " c.cedula = {0} AND ".format(lcCedula) if lcCedula else ''
+        vCod = "upper(c.codigo)  = '{0}' AND ".format(lcCodigo.toUpper()) if lcCodigo else ''
+        vNom = "upper(c.nombre) like '%{0}%' AND ".format(lcNombre.toUpper()) if lcNombre else ''
+        vApe = "upper(c.apellido) like '%{0}%' AND ".format(lcApellido.toUpper()) if lcApellido else ''
+        vUsu = "upper(c.usuario_red) like '%{0}%' AND ".format(lcUsuarioRed.toUpper()) if lcUsuarioRed else ''
+        vTipc = "upper(c.tipo_contacto) like '%{0}%' AND ".format(lcTipoContacto.toUpper()) if lcTipoContacto else ''
+        vTlfO = "c.telefono_oficina like '%{0}%' AND ".format(lcTelefOficina) if lcTelefOficina else ''
+        vTlfM = "c.telefono_movil like '%{0}%' AND ".format(lcTelefMovil) if lcTelefMovil else ''
+        vEma = "c.email like '%{0}%' AND ".format(lcEmail.toUpper()) if lcEmail else ''
+        vDpto = "c.departamento_id like '%{0}%' AND ".format(lcDepartamento) if lcDepartamento else ''
+        vLoc = "c.localidad_id like '%{0}%' AND ".format(lcLocalidad) if lcLocalidad else ''
+        vUbi = "c.ubicacion like '%{0}%' AND ".format(lcUbicacion.toUpper()) if lcUbicacion else ''
+        vObs = "upper(c.observacion) like '%{0}%' AND ".format(lcObservacion.toUpper()) if lcObservacion else ''
 
-        campos = vId + vCed + vCod + vNom + vApe + vUsu + vTipc + vTlfO + vTlfM + vDpto + vLoc + vUbi + vObs
-        cadenaSql = "select * from asiste.contactos where {0} del = 0 order by apellido, nombre".format(campos)
+        campos = vId + vCed + vCod + vNom + vApe + vUsu + vTipc + vTlfO + vTlfM + vEma + vDpto + vLoc + vUbi + vObs
+        
+        cadenaSql = '''select 
+        c.id ,c.cedula, c.codigo, c.nombre, c.apellido,c.usuario_red,
+        c.email, c.telefono_oficina, c.telefono_movil, 
+        c.tipo_contacto_id,
+        c.observacion, 
+        c.departamento_id, d.sym,
+        c.localidad_id, l.sym,
+        c.ubicacion_id, u.sym,
+        c.foto 
+        from asiste.contactos c
+        left join asiste.departamento d on c.departamento_id = d.id
+        left join asiste.localidad l on c.localidad_id = l.id
+        left join asiste.ubicacion u on c.ubicacion_id = u.id
+         where {0} c.del = 0 order by c.apellido, c.nombre
+        '''.format(campos)
+        
         return cadenaSql
 
     def obtener_datos(self, cadena_pasada):
@@ -448,7 +507,7 @@ class ui_(QtGui.QWidget):
             self.registros = []
         return self.registros
     
-    def PrepararTableWidget(self, CantidadReg=0, Columnas=0):
+    def PrepararTableWidget(self, cantidadReg = 0, Columnas = []):
         '''
         Parametros pasados (2) (CantidadReg: Entero) y (Columnas :Lista)
         Ej: PrepararTableWidget(50, ['ID', 'FECHA', 'PUERTO'])
@@ -471,9 +530,8 @@ class ui_(QtGui.QWidget):
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.AlternateBase, brush)
 
-        lista = CantidadReg
-        self.ui.tableWidget.setColumnCount(len(Columnas))
-        self.ui.tableWidget.setRowCount(len(lista))
+        self.tableWidget.setColumnCount(len(Columnas))
+        self.tableWidget.setRowCount(cantidadReg)
 
         #Armar Cabeceras de las Columnas
         cabecera = []
@@ -485,20 +543,16 @@ class ui_(QtGui.QWidget):
             posicion = Columnas.index(f)
             nombreCampo = f[0]
             ancho = f[1]
-            self.ui.tableWidget.horizontalHeader().resizeSection(posicion, ancho)
+            self.tableWidget.horizontalHeader().resizeSection(posicion, ancho)
 
-        self.ui.tableWidget.setPalette(palette)
-        self.ui.tableWidget.setAutoFillBackground(False)
-        self.ui.tableWidget.setAlternatingRowColors(True)
-        self.ui.tableWidget.setHorizontalHeaderLabels(cabecera)
+        self.tableWidget.setPalette(palette)
+        self.tableWidget.setAutoFillBackground(False)
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setHorizontalHeaderLabels(cabecera)
 
-        self.ui.tableWidget.setSelectionMode(QtGui.QTableWidget.SingleSelection)
-        self.ui.tableWidget.setSelectionBehavior(QtGui.QTableView.SelectRows)
+        self.tableWidget.setSelectionMode(QtGui.QTableWidget.SingleSelection)
+        self.tableWidget.setSelectionBehavior(QtGui.QTableView.SelectRows)
 
-        #ciudades = ["Valencia","Maracay","Barquisimeto","Merida","Caracas"]
-        #self.combo.addItems(ciudades)
-        #deshabilitar()
-    
     def InsertarRegistros(self, cursor):
         '''
         Metodo que permite asignarle registros al tablewidget
@@ -509,9 +563,53 @@ class ui_(QtGui.QWidget):
         ListaCursor = cursor
         for pos, fila in enumerate(ListaCursor):
             for posc, columna in enumerate(fila):
-                self.ui.tableWidget.setItem(pos, posc, QtGui.QTableWidgetItem(str(columna)))
+                self.tableWidget.setItem(pos, posc, QtGui.QTableWidgetItem(str(columna)))
 
+    def clickEnTabla(self):
+        '''
+        Este metodo se activa al momento de hace click en el tableWidget y permite
+        mostrar el contenido de los campos de la fila seleccionada en el tableWidget
+        en los textbox bien sea para Verlos, modificarlos o Eliminarlos
+    
 
+        self.activarBuscar = False
+         
+        fila = self.tableWidget.currentRow()
+        #total_columnas = self.tableWidget.columnCount()
+        
+        id = self.tableWidget.item(fila, 0).text()
+        nombre = self.tableWidget.item(fila, 1).text()
+        dpto = self.tableWidget.item(fila, 2).text()
+        tlf = self.tableWidget.item(fila, 3).text()
+
+        self.txtId.setText(id)
+        self.txtNombre.setText(nombre)
+        self.txtDepartamento.setText(dpto)
+        self.txtTelefono.setText(tlf) 
+
+        self.btnModificar.setEnabled(True)
+        self.btnEliminar.setEnabled(True)
+        '''
+        pass
+
+    def limpiarText(self):
+        '''
+        Limpia los QlineEdit o Textbox
+        '''
+        self.txtId.clear()
+        self.txtCedula.clear()
+        self.txtCodigo.clear()
+        self.txtNombre.clear()
+        self.txtApellido.clear()
+        self.txtUsuarioRed.clear()
+        self.cbxTipoContacto.clear()
+        self.txtTelefOficina.clear()
+        self.txtTelefMovil.clear()
+        self.txtEmail.clear()
+        self.txtDepartamento.clear()
+        self.txtLocalidad.clear()
+        self.txtUbicacion.clear()
+        self.txtObservacion.clear()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
