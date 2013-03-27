@@ -104,7 +104,28 @@ class ControlMainWindow(QtGui.QMainWindow):
 
     def quitarId(self, objeto1, objeto2, objeto3):
         '''
+        Este Metodo recibe 3 parametros, tipo Objeto
+        1- El QlineEdit donde se desea almacenar el Codigo
+        2- El QLineEdit donde se desea alamcenar la descripcion de ese Codigo
+        3- El QLineEdir a donde se debe redirigir el Foco cuando se presione la tecla enter
+        
+        Cuando el usuario selecciona una opcion mediante la lista del autocompeltado
+        este devuelve un ID y la Descripcion de ese ID, Ej ID_Cliente y Nombre del Cliente
+
+        Este metodo intenta separar de esa lista ambos parametros para colocarlos
+        cada uno en su correspondiente caja de text o QLineEdit, si por el contrario
+        el usuario no selecciona nada de la lista de autocopletado si no que lo escribe
+        el mismo por ejemplo el nombre del cliente porque se lo sabe de momoria 
+        entonces se hace una busqueda de ese nombre en la lista del autocompletado para
+        verificar que si existe asi como lo escribio y traernos de esa lista el ID
+        asociado a ese nombre
+
+        NOTA:
+        La lista de autocompletado viene de una consulta a la tabla de la base de datos
+        es decir que dentro de esa lista no hay ningun nombre que no exista ya previamente
+        dentro de la base de datos
         '''
+
         objId = objeto1
         objTexto = objeto2
         objFoco = objeto3
@@ -112,10 +133,17 @@ class ControlMainWindow(QtGui.QMainWindow):
         id = ''
         nombre = ''
 
+        #Capturo la informacion escrita en la caja de Texto
         valorId = objId.text()
         valorPasado = objTexto.text()
         listaCod = valorPasado.split(',')
         
+        '''
+        Se verifica si lo escrito en la caja de texto fue seleccionada 
+        de la lista de autocompletado o fue escrito manualmente;
+        cuando se toma el valor de la lista de Autcompletado este
+        vine descrito de la siguiente manera Nombre,ID_nombre
+        '''
         if valorPasado:
             if len(listaCod) == 1:
                 id = valorId
@@ -141,8 +169,8 @@ class ControlMainWindow(QtGui.QMainWindow):
             else:
                 objId.setText('')
                 objTexto.setText('')
-                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Mensage de Sistema *** Atencion *** ', 
-                        'El contacto ingresado no Existe, Favor verifique el conactacto')
+                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Mensage de Sistema *** Atencion *** ', v
+                        'El contacto ingresado no Existe, Favor verifique el conctacto ')
                 mi.exec_()
 
     def llenarCombo(self):

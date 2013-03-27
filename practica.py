@@ -15,6 +15,8 @@ class miQLineEdit(QtGui.QLineEdit):
         super(miQLineEdit, self).__init__()
         self.foreColor()
         self.backColor()
+        self.tag = ''
+        self.listaAutoC = ''
 
     def autoCompletado(self, lista):
         '''
@@ -24,13 +26,21 @@ class miQLineEdit(QtGui.QLineEdit):
         Parametro recibidos 1:
         1-) Tipo Lista, La lista que se desea mostrar en el autocompletado
        '''       
-        self.listaPalabras = [f[0] for f in lista]
+        self.listaPalabras = [f[0].strip() for f in lista]
         completer = QtGui.QCompleter(self.listaPalabras, self)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.setCompleter(completer)
+        self.listaAutoC = lista
 
-    def infocus():
-        pass
+    '''
+    def focusOutEvent(self, event):
+        print 'lostfocus'
+        return
+    
+    def focusInEvent(self, event):
+        print 'GoFocus'
+        return
+    '''
 
     def foreColor(self, color = QtGui.QColor(0, 0, 0)):
         paletteC = QtGui.QPalette()
@@ -190,8 +200,11 @@ class ui_(QtGui.QWidget):
         self.txtEmail = miQLineEdit()
  
         #Campo Departamento
+        l= ["Select sym||'|'||id as departamento from asiste.departamento where del = 0 and activo = 0 order by sym"]
+        listaDevuelta = self.prepararAutoCompletar(l)
         self.lblDepartamento = QtGui.QLabel('Departamento:')
         self.txtDepartamento = miQLineEdit()
+        self.txtDepartamento.autoCompletado(listaDevuelta)
         self.btnDptoBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarDpto = QtGui.QIcon()
@@ -204,8 +217,11 @@ class ui_(QtGui.QWidget):
         self.hlDepartamento.addItem(self.spacerDepartamento)
 
         #Campo Localidad
+        l= ["Select sym||'|'||id as Localidad from asiste.localidad where del = 0 and activo = 0 order by sym"]
+        listaDevuelta = self.prepararAutoCompletar(l)
         self.lblLocalidad = QtGui.QLabel('Localidad')
         self.txtLocalidad = miQLineEdit()
+        self.txtLocalidad.autoCompletado(listaDevuelta)
         self.btnLocalBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarLocal = QtGui.QIcon()
@@ -219,8 +235,11 @@ class ui_(QtGui.QWidget):
         self.hlLocal.addItem(self.spacerLocal)
 
         #Campo Ubicacion
+        l= ["Select sym||'|'||id as Ubicacion from asiste.ubicacion where del = 0 and activo = 0  order by sym"]
+        listaDevuelta = self.prepararAutoCompletar(l)
         self.lblUbicacion = QtGui.QLabel('Ubicacion:')
         self.txtUbicacion = miQLineEdit()
+        self.txtUbicacion.autoCompletado(listaDevuelta)
         self.btnUbicaBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarUbica = QtGui.QIcon()
@@ -289,13 +308,16 @@ class ui_(QtGui.QWidget):
         self.gl.addWidget(self.lblObservacion, 15, 1)
         self.gl.addWidget(self.txtObservacion, 15, 2)
 
-        self.setGeometry(0, 0, 1091, 496)
+        self.setGeometry(0, 0, 1350, 496)
 
         self.setLayout(self.gl)
         
         #Hasta Aqui:
         #Eventos de los Botones.
+        self.connect(self.btnNuevo, QtCore.SIGNAL("clicked()"), self.nuevoGuardar)
+        self.connect(self.btnDeshacer, QtCore.SIGNAL("clicked()"), self.iniciarForm)
         self.connect(self.btnLimpiar, QtCore.SIGNAL("clicked()"), self.limpiarText)
+        self.connect(self.btnExportar, QtCore.SIGNAL("clicked()"), self.mostrar)
 
         #Eventos de los QLineEdit
         self.connect(self.txtId, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
@@ -308,12 +330,21 @@ class ui_(QtGui.QWidget):
         self.connect(self.txtTelefOficina, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
         self.connect(self.txtTelefMovil, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
         self.connect(self.txtEmail, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        
         self.connect(self.txtDepartamento, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtDepartamento, QtCore.SIGNAL("editingFinished()"), 
+                lambda: self.quitarId(self.txtDepartamento, self.txtLocalidad))
+        
         self.connect(self.txtLocalidad, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtLocalidad, QtCore.SIGNAL("editingFinished()"), 
+                lambda: self.quitarId(self.txtLocalidad, self.txtUbicacion))
+        
         self.connect(self.txtUbicacion, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.txtUbicacion, QtCore.SIGNAL("editingFinished()"), 
+                lambda: self.quitarId(self.txtUbicacion, self.txtObservacion))
+        
         self.connect(self.txtObservacion, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
-
-        QtCore.QObject.connect(self.tableWidget, QtCore.SIGNAL("itemClicked(QTableWidgetItem*)"), self.clickEnTabla)
+        self.connect(self.tableWidget, QtCore.SIGNAL("itemClicked(QTableWidgetItem*)"), self.clickEnTabla)
 
         self.establecerOrder()
         self.inicio()
@@ -360,6 +391,11 @@ class ui_(QtGui.QWidget):
     def iniciarForm(self):
         '''
         '''
+        
+        #Habilitar el QLineEdit del ID  y el TableWidget ya que 
+        #el boton nuevo los deshabilita
+        self.txtId.setEnabled(True)
+        self.tableWidget.setEnabled(True)
 
         #Activar la Busqueda al escribir el los textbox
         self.activarBuscar = True
@@ -374,6 +410,7 @@ class ui_(QtGui.QWidget):
         self.btnEliminar.setEnabled(False)
         self.btnLimpiar.setEnabled(True)
         self.btnDeshacer.setEnabled(False)
+        self.btnExportar.setEnabled(True)
         self.btnSalir.setEnabled(True)
 
         #Cambiar el Caption o Text del Boton
@@ -398,6 +435,104 @@ class ui_(QtGui.QWidget):
             self.btnDeshacer.setIconSize(QtCore.QSize(35, 35))
             self.btnSalir.setIconSize(QtCore.QSize(35, 35))
 
+    def mostrar(self):
+        print self.txtDepartamento.tag
+
+    def quitarId(self, objeto2, objeto3):
+        '''
+        Este Metodo recibe 3 parametros, tipo Objeto
+        1- El QlineEdit donde se desea almacenar el Codigo
+        2- El QLineEdit donde se desea alamcenar la descripcion de ese Codigo
+        3- El QLineEdir a donde se debe redirigir el Foco cuando se presione la tecla enter
+        
+        Cuando el usuario selecciona una opcion mediante la lista del autocompeltado
+        este devuelve un ID y la Descripcion de ese ID, Ej ID_Cliente y Nombre del Cliente
+
+        Este metodo intenta separar de esa lista ambos parametros para colocarlos
+        cada uno en su correspondiente caja de text o QLineEdit, si por el contrario
+        el usuario no selecciona nada de la lista de autocopletado si no que lo escribe
+        el mismo por ejemplo el nombre del cliente porque se lo sabe de momoria 
+        entonces se hace una busqueda de ese nombre en la lista del autocompletado para
+        verificar que si existe asi como lo escribio y traernos de esa lista el ID
+        asociado a ese nombre
+
+        NOTA:
+        La lista de autocompletado viene de una consulta a la tabla de la base de datos
+        es decir que dentro de esa lista no hay ningun nombre que no exista ya previamente
+        dentro de la base de datos
+        '''
+        objTexto = objeto2
+        objFoco = objeto3
+
+        id = ''
+        nombre = ''
+        valorId = ''
+        valorPasado = ''
+        lObjAC = ''
+
+        #Capturo la informacion escrita en la caja de Texto
+        # Obtengo la lista de autocompletado que esta almacenada como propiedad del Objeto, ver Clase miQLineEdit()
+        lObjAC =  objTexto.listaAutoC          
+        valorId = objTexto.tag
+        valorPasado = str(objTexto.text()).upper()
+
+        listaCod = valorPasado.split('|')
+        listaFinal  =  [f[0].strip() for f in lObjAC]
+        '''
+        Se verifica si lo escrito en la caja de texto fue seleccionada 
+        de la lista de autocompletado o fue escrito manualmente;
+        cuando se toma el valor de la lista de Autcompletado este
+        viene descrito de la siguiente manera Nombre,ID_nombre
+        '''
+        if valorPasado:
+            if len(listaCod) == 1:
+                id = valorId
+                nombre = valorPasado
+    
+            elif len(listaCod) == 2:
+                nombre = listaCod[0] 
+                id = listaCod[1]
+    
+            elif len(listaCod) == 3:         
+                id = listaCod[2]
+                nombre = listaCod[1]
+               
+            conseguido = False
+            for f in listaFinal:
+                if nombre in f.upper().split('|'):
+                    id = f.split('|')[1]
+                    conseguido = True
+    
+            if conseguido:
+                objTexto.tag = id
+                objTexto.setText(nombre)
+                objFoco.setFocus()
+            else:
+                objTexto.tag = ''
+                objTexto.setText('')
+                mi = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Mensage de Sistema *** Atencion *** ', 
+                        'El contacto ingresado no Existe, Favor verifique el conctacto ')
+                mi.exec_()
+        else:
+            objTexto.tag = ''
+            objTexto.setText('')
+
+    def prepararAutoCompletar(self, listaCadenas):
+        '''
+        Metodo que permite ejecutar varias sentencias SQL 
+        pasadas en una lista y concatenar los resultados
+        para devolverlos 
+        ''' 
+        acumulado = [] 
+        host,  db, user, clave = fc.opcion_consultar('POSTGRESQL')
+        self.cadconex = "host='%s' dbname='%s' user='%s' password='%s'" % (host[1], db[1], user[1], clave[1])
+        pg = ConectarPG(self.cadconex)
+        
+        for f in listaCadenas:
+            resultado = pg.ejecutar(f)
+            acumulado = acumulado + resultado
+        return acumulado
+
     def Buscar(self):
         '''
         Metodo que se utiliza para realizar la busqueda segun lo que
@@ -410,10 +545,10 @@ class ui_(QtGui.QWidget):
                 ('Nombre' , 100),
                 ('Apellido' ,100),
                 ('Usuario_red' ,85),
-                ('Email' , 100),
+                ('Tipo Contacto Id' ,95),
                 ('Telf Ofic' , 85),
                 ('Telf Movil' , 95),
-                ('Tipo Contacto Id' ,95),
+                ('Email' , 100),
                 ('Observacion' , 150),
                 ('Dpto Id' , 80),
                 ('Departamento', 170),
@@ -472,12 +607,13 @@ class ui_(QtGui.QWidget):
         
         cadenaSql = '''select 
         c.id ,c.cedula, c.codigo, c.nombre, c.apellido,c.usuario_red,
-        c.email, c.telefono_oficina, c.telefono_movil, 
         c.tipo_contacto_id,
+        c.telefono_oficina, c.telefono_movil, 
+        c.email,
         c.observacion, 
-        c.departamento_id, d.sym,
-        c.localidad_id, l.sym,
-        c.ubicacion_id, u.sym,
+        c.departamento_id, d.sym as departamento,
+        c.localidad_id, l.sym as localidad,
+        c.ubicacion_id, u.sym as ubicacion,
         c.foto 
         from asiste.contactos c
         left join asiste.departamento d on c.departamento_id = d.id
@@ -569,28 +705,50 @@ class ui_(QtGui.QWidget):
         '''
         Este metodo se activa al momento de hace click en el tableWidget y permite
         mostrar el contenido de los campos de la fila seleccionada en el tableWidget
-        en los textbox bien sea para Verlos, modificarlos o Eliminarlos
-    
+        en los textbox bien sea para Verlos, modificarlos o Eliminarlos 
+        '''
 
-        self.activarBuscar = False
-         
+        self.activarBuscar = False 
         fila = self.tableWidget.currentRow()
         #total_columnas = self.tableWidget.columnCount()
         
-        id = self.tableWidget.item(fila, 0).text()
-        nombre = self.tableWidget.item(fila, 1).text()
-        dpto = self.tableWidget.item(fila, 2).text()
-        tlf = self.tableWidget.item(fila, 3).text()
-
-        self.txtId.setText(id)
-        self.txtNombre.setText(nombre)
-        self.txtDepartamento.setText(dpto)
-        self.txtTelefono.setText(tlf) 
-
+        #Capturar la Fila seleccionada del Table Widget
+        twId = self.tableWidget.item(fila, 0).text()
+        twCedula = self.tableWidget.item(fila, 1).text()
+        twCodigo = self.tableWidget.item(fila, 2).text()
+        twNombre = self.tableWidget.item(fila, 3).text()
+        twApellido = self.tableWidget.item(fila, 4).text()
+        twUsuarioRed = self.tableWidget.item(fila, 5).text()
+        twTipoContacto = self.tableWidget.item(fila, 6).text()
+        twTelefOficina = self.tableWidget.item(fila, 7).text()
+        twTelefMovil = self.tableWidget.item(fila, 8).text()
+        twEmail = self.tableWidget.item(fila, 9).text()
+        twObservacion = self.tableWidget.item(fila, 10).text()
+        self.twDepartamentoId = self.tableWidget.item(fila, 11).text()
+        twDepartamento = self.tableWidget.item(fila, 12).text()
+        self.twLocalidadId = self.tableWidget.item(fila, 13).text()
+        twLocalidad = self.tableWidget.item(fila, 14).text()
+        self.twUbicacionId = self.tableWidget.item(fila, 15).text()
+        twUbicacion = self.tableWidget.item(fila, 16).text()
+ 
+        #Asignar a los QLineEdit el Valor de la fila del table widget
+        self.txtId.setText(twId)
+        self.txtCedula.setText(twCedula)
+        self.txtCodigo.setText(twCodigo)
+        self.txtNombre.setText(twNombre)
+        self.txtApellido.setText(twApellido)
+        self.txtUsuarioRed.setText(twUsuarioRed)
+        #self.cbxTipoContacto.currentText()
+        self.txtTelefOficina.setText(twTelefOficina)
+        self.txtTelefMovil.setText(twTelefMovil)
+        self.txtEmail.setText(twEmail)
+        self.txtDepartamento.setText(twDepartamento)
+        self.txtLocalidad.setText(twLocalidad)
+        self.txtUbicacion.setText(twUbicacion)
+        self.txtObservacion.setText(twObservacion)
+      
         self.btnModificar.setEnabled(True)
         self.btnEliminar.setEnabled(True)
-        '''
-        pass
 
     def limpiarText(self):
         '''
@@ -610,6 +768,160 @@ class ui_(QtGui.QWidget):
         self.txtLocalidad.clear()
         self.txtUbicacion.clear()
         self.txtObservacion.clear()
+        
+        self.iniciarForm()
+
+    def nuevoGuardar(self):
+        '''
+        El metodo nuevo cumple dos funciones, una es de boton nuevo y otra es de boton guardar,
+        la Variables self.banderaNuevo es el swith que me permite saber cuando el 
+        boton nuevo hace la funcion de nuevo o de guardar, cuando la variable
+        banderaNuevo es True entonces el boton debe actuar como Boton Nuevo de
+        lo contrario cuando banderaNuevo es false entonces el boton nuevo debe 
+        actuar como boton Guardar
+        
+        lcMensaje = 'Hola'  # self.combo.currentText()
+        msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Question, 'Titulo',lcMensaje)
+        msgBox.exec_()
+        '''
+
+        if self.banderaNuevo:
+            #Prepara los Botones
+            self.habilitarNuevo()
+        else:
+            #Ejecurar sentencia SQL para guardar en PostGreSQL
+            nombre = self.txtNombre.text()
+            dpto = self.txtDepartamento.text()
+            telf = self.txtTelefono.text()
+
+            sqlInsert = " insert into agenda (nombre, departamento, telefono) values ('%s', '%s', '%s') " % (nombre, dpto, telf)
+            
+            try:
+                pg = ConectarPG(self.cadconex)
+                pg.ejecutar(sqlInsert)
+                pg.conn.commit()
+
+                lcMensaje = 'Registro Guardaro Satisfactoriamente'  # self.combo.currentText()
+                msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, 'Felicidades',lcMensaje)
+                msgBox.exec_()
+
+                self.iniciarForm()
+                self.limpiarText()
+            except:
+                print exceptionValue
+            
+            #Restaurar todos los Iconos y Botones
+            #self.iniciarForm()
+            #self.limpiarText()
+
+    def habilitarNuevo(self):
+        ''' 
+         Este metodo permite preparar los botones, los text y los iconos.
+         Cuando se presiona el boton nuevo por primera vez este cambia para Boton Guardar asi como  
+         tanmbien el icono y el texto del boton y desabilita el resto de los botonos, dejando solo 
+         el boton Guardar,deshacer y salir
+        '''
+        
+        #deshabilitar el tableWidget
+        self.tableWidget.setEnabled(False)
+
+        #Limpar los TextBox
+        self.limpiarText()
+
+        #Desactivar la Busqueda al escribir el los textbox
+        self.activarBuscar = False
+
+        #Activar Bandera para saber cuando el boton Nuevo funciona como Boton Nuevo o Como Boton Guardar
+        self.banderaNuevo = False
+
+        #Deshabilitar y Habilitar botonoes
+        self.btnModificar.setEnabled(False)
+        self.btnEliminar.setEnabled(False)
+        self.btnLimpiar.setEnabled(False)
+        self.btnExportar.setEnabled(False)
+        self.btnDeshacer.setEnabled(True)
+            
+        #Cambiar el Caption o Text del Boton
+        self.btnNuevo.setText("&Guardar")
+            
+        #Cambiar icono del Boton Nuevo  de Nuevo por Guardar
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("img/40px_3floppy_unmount.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnNuevo.setIcon(icon1)
+        self.txtCedula.setFocus()
+
+        #Deshabilitar el QLineEdit del ID porque este es autoincremental
+        self.txtId.setEnabled(False)
+
+    def modificarGuardar(self):
+        '''
+        El metodo modificarGuardar cumple dos funciones, una es de boton Modificar y otra es de boton guardar,
+        la Variables self.banderaModificar es el swith que me permite saber cuando el 
+        boton Modificar hace la funcion de Modificar o de guardar, cuando la variable
+        banderaModificar es True entonces el boton debe actuar como Boton Guardar de
+        lo contrario cuando banderaModificar es false entonces el boton nuevo debe 
+        actuar como boton Guardar
+        '''
+
+        if self.banderaModificar:
+            #Prepara los Botones
+            self.habilitarModificar()
+        else:            
+            #Ejecurar sentencia SQL para guardar en PostGreSQL
+            id = self.txtId.text()
+            nombre = self.txtNombre.text()
+            dpto = self.txtDepartamento.text()
+            telf = self.txtTelefono.text()
+
+            sqlUpdate = " update agenda set nombre = '%s', departamento = '%s', telefono = '%s' where id = %s " % (nombre, dpto, telf, id)
+            print sqlUpdate
+
+            try:
+                pg = ConectarPG(self.cadconex)
+                pg.ejecutar(sqlUpdate)
+                pg.conn.commit()
+
+                lcMensaje = 'Registro Guardaro Satisfactoriamente'  # self.combo.currentText()
+                msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, 'Felicidades',lcMensaje)
+                msgBox.exec_()
+            except:
+                print exceptionValue
+            
+            #Restaurar los Botones a su normalidad
+            self.iniciarForm()
+            self.limpiar_text()
+
+
+    def habilitarModificar(self):
+        ''' 
+         Este metodo permite habilitar el Boton Modificar.
+         Cuando se presiona el boton Modificar por primera vez este cambia para Boton Guardar asi como  
+         tanmbien el icono y el texto del boton y desabilita el resto de los botonos, dejando solo el 
+         boton Guardar,deshacer y salir
+        '''
+
+        #Desactivar la Busqueda al escribir el los QlineEdit o TextBox
+        self.activarBuscar = False
+
+        #Activar Bandera para saber cuando el boton Nuevo funciona como Boton Nuevo o Como Boton Guardar
+        self.banderaModificar = False
+            
+        #Deshabilitar y Habilitar botonoes y TextBox
+        self.txtId.setEnabled(False)
+
+        self.btnNuevo.setEnabled(False)
+        self.btnEliminar.setEnabled(False)
+        self.btnLimpiar.setEnabled(False)
+        self.btnDeshacer.setEnabled(True)
+            
+        #Cambiar el Caption o Text del Boton
+        self.btnModificar.setText("&Guardar")
+            
+        #Cambiar icono del Boton Nuevo  de Nuevo por Guardar
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("img/40px_3floppy_unmount.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnModificar.setIcon(icon1)
+        self.txtNombre.setFocus()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
