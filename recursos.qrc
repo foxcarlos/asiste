@@ -1,0 +1,36 @@
+<RCC>
+  <qresource>
+    <file alias="buscar20px">img/20px_find.jpg</file>
+    <file>img/20px-Crystal_Clear_app_kdict.png</file>
+    <file>img/25px_exit.png</file>
+    <file>img/30px_1 (514).png</file>
+    <file>img/30px-Crystal_Clear_app_List_manager.png</file>
+    <file>img/40px_3floppy_unmount.png</file>
+    <file alias="buscar40px">img/40px_find.png</file>
+    <file>img/40px_reload.png</file>
+    <file>img/40px-Crystal_Clear_app_kedit.png</file>
+    <file>img/agenda.ico</file>
+    <file>img/apartment-2-16.png</file>
+    <file>img/asiste_logo.png</file>
+    <file>img/asiste_logo3.png</file>
+    <file>img/Asiste-512.png</file>
+    <file>img/building-5-16.png</file>
+    <file>img/building-5-24.png</file>
+    <file>img/captura.png</file>
+    <file>img/check-mark-2-16.png</file>
+    <file>img/check-mark-2-24.png</file>
+    <file>img/erase.png</file>
+    <file>img/kdmconfig.png</file>
+    <file>img/laptop-4-16.png</file>
+    <file>img/map-4-16.png</file>
+    <file>img/map-4-24.png</file>
+    <file>img/megaphone-4-24.png</file>
+    <file>img/OfficeExcel.png</file>
+    <file>img/tablet-3-16.png</file>
+    <file>img/tag-4-24.png</file>
+    <file>img/user-6-16.png</file>
+    <file>img/user-6-24.png</file>
+    <file>img/user-12-24.png</file>
+    <file>img/user-14-24.png</file>
+  </qresource>
+</RCC>

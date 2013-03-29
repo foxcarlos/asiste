@@ -1,48 +1,18 @@
 
--- Schema: asiste
--- DROP SCHEMA asiste;
-
-CREATE SCHEMA asiste
-  AUTHORIZATION admhc;
 
 
-
--- Table: asiste.estado
--- DROP TABLE asiste.estado;
-
-CREATE TABLE asiste.estado
-(
-  id serial NOT NULL, -- Campo Autoincremental
-  del integer DEFAULT 0, -- Campo que indica si un registro es eliminado, por defecto tiene valor 0 que indica que no ha sido eliminado
-  sym character varying(100), -- Campo que describe el estado de un control
-  observacion character varying(240), -- Campo que permite dar un detalle o hacer alguna observacion sobre el estado
-  CONSTRAINT estado_id PRIMARY KEY (id )
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE asiste.estado
-  OWNER TO admhc;
-COMMENT ON TABLE asiste.estado
-  IS 'Tabla de Status de las Ordenes de Servicio';
-COMMENT ON COLUMN asiste.estado.id IS 'Campo Autoincremental';
-COMMENT ON COLUMN asiste.estado.del IS 'Campo que indica si un registro es eliminado, por defecto tiene valor 0 que indica que no ha sido eliminado';
-COMMENT ON COLUMN asiste.estado.sym IS 'Campo que describe el estado de un control';
-COMMENT ON COLUMN asiste.estado.observacion IS 'Campo que permite dar un detalle o hacer alguna observacion sobre el estado';
-
-
-##########################################################################
+-- ##########################################################################
 -- Table: asiste.contactos
 
 -- DROP TABLE asiste.contactos;
-##########################################################################
+-- ##########################################################################
 -- Table: asiste.contactos
 
 -- DROP TABLE asiste.contactos;
 
 CREATE TABLE asiste.contactos
 (
-  id integer NOT NULL DEFAULT nextval('asiste.contactos_id_seq1'::regclass), -- Campo autoincremental Id unico
+  id serial NOT NULL, -- Campo autoincremental Id unico
   del integer DEFAULT 0, -- Campo que permite saber si un registro fue eliminado, por defecto el valor es 0 que indica que no ha sido eliminado 1 indica que fue eliminado
   cedula integer NOT NULL, -- Campo que permite indicar la cedula de indentidad o cualquier ID unico para una persona, no se permiten valores Nulos
   codigo character varying(100) NOT NULL, -- Campo que permite asignarle un codigo al contacto, no se permiten valores Nulos ni elementos repetidos
@@ -81,7 +51,7 @@ COMMENT ON COLUMN asiste.contactos.telefono_movil IS 'Campo para imndicar el tel
 COMMENT ON COLUMN asiste.contactos.tipo_contacto_id IS 'Campo para almacenar el ID del tipo de Contacto. se relaciona con  la tabla tipo_contacto';
 COMMENT ON COLUMN asiste.contactos.foto IS 'Ruta y nombre del archivo donde se guardara la Foto';
 
-##########################################################################
+-- ##########################################################################
 
 -- Table: asiste.departamento
 
@@ -105,7 +75,7 @@ ALTER TABLE asiste.departamento
 
 
 
-#################################################################################
+-- #################################################################################
 
 -- Table: asiste.estado
 
@@ -133,7 +103,7 @@ COMMENT ON COLUMN asiste.estado.del IS 'Campo que indica si un registro es elimi
 COMMENT ON COLUMN asiste.estado.sym IS 'Campo que describe el estado de un control';
 COMMENT ON COLUMN asiste.estado.codigo IS 'Campo que permite colocarle un codigo manual y unico al estado';
 
-########################################################################################################################################################
+-- ########################################################################################################################################################
 
 -- Table: asiste.localidad
 
@@ -156,7 +126,7 @@ ALTER TABLE asiste.localidad
   OWNER TO admhc;
 COMMENT ON COLUMN asiste.localidad.id IS 'Campo ID Autincremental';
 
-##########################################################################################################################################################
+-- ##########################################################################################################################################################
 
 -- Table: asiste.ubicacion
 

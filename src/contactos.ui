@@ -28,8 +28,8 @@
         <string>  &amp;Nuevo  </string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/30px-Crystal_Clear_app_List_manager.png</normaloff>../img/30px-Crystal_Clear_app_List_manager.png</iconset>
+        <iconset resource="../recursos.qrc">
+         <normaloff>:/img/30px-Crystal_Clear_app_List_manager.png</normaloff>:/img/30px-Crystal_Clear_app_List_manager.png</iconset>
        </property>
       </widget>
      </item>
@@ -45,8 +45,8 @@
         <string>&amp;Modificar</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/40px-Crystal_Clear_app_kedit.png</normaloff>../img/40px-Crystal_Clear_app_kedit.png</iconset>
+        <iconset resource="../recursos.qrc">
+         <normaloff>:/img/40px-Crystal_Clear_app_kedit.png</normaloff>:/img/40px-Crystal_Clear_app_kedit.png</iconset>
        </property>
       </widget>
      </item>
@@ -59,8 +59,8 @@
         <string>&amp;Eliminar</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/30px_1 (514).png</normaloff>../img/30px_1 (514).png</iconset>
+        <iconset resource="../recursos.qrc">
+         <normaloff>:/img/30px_1 (514).png</normaloff>:/img/30px_1 (514).png</iconset>
        </property>
       </widget>
      </item>
@@ -104,8 +104,8 @@
         <string>&amp;Exportar</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/OfficeExcel.png</normaloff>../img/OfficeExcel.png</iconset>
+        <iconset resource="../recursos.qrc">
+         <normaloff>:/buscar20px</normaloff>:/buscar20px</iconset>
        </property>
       </widget>
      </item>
@@ -579,6 +579,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../recursos.qrc"/>
+ </resources>
  <connections/>
 </ui>

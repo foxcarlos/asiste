@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import QtCore, QtGui
+#from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 from rutinas.varias import *
 import os
 
@@ -138,7 +139,7 @@ class ui_(QtGui.QWidget):
         self.hlId = QtGui.QHBoxLayout()
         self.lblId = QtGui.QLabel('ID:')
         self.txtId = miQLineEdit()
-        self.txtId.autoCompletado([('Carlos',), ( 'Carla Patricia',), ( 'Camen Diaz',)])
+        #self.txtId.autoCompletado([('Carlos',), ( 'Carla Patricia',), ( 'Camen Diaz',)])
         self.spacerId = QtGui.QSpacerItem(500, 20)
         self.hlId.addWidget(self.txtId)
         self.hlId.addItem(self.spacerId)
@@ -147,6 +148,8 @@ class ui_(QtGui.QWidget):
         self.hlCedula = QtGui.QHBoxLayout()
         self.lblCedula = QtGui.QLabel('Cedula:')
         self.txtCedula = miQLineEdit()
+        self.txtCedula.setInputMask('999999999999')
+        self.txtCedula.setToolTip('Ingrese solo caracteres numericos para la Cedula y sin espacion en blanco')
         self.spacerCedula = QtGui.QSpacerItem(400, 20)
         self.hlCedula.addWidget(self.txtCedula)
         self.hlCedula.addItem(self.spacerCedula)
@@ -155,6 +158,7 @@ class ui_(QtGui.QWidget):
         self.hlCodigo = QtGui.QHBoxLayout()
         self.lblCodigo = QtGui.QLabel('Codigo:')
         self.txtCodigo = miQLineEdit()
+        self.txtCodigo.setToolTip('Ingrese un Codigo o la Ficha del Empleado, no puede ser un codigo repetido')
         self.spacerCodigo = QtGui.QSpacerItem(400, 20)
         self.hlCodigo.addWidget(self.txtCodigo)
         self.hlCodigo.addItem(self.spacerCodigo)
@@ -194,6 +198,8 @@ class ui_(QtGui.QWidget):
         #Campo Telef Movil
         self.lblTelefMovil = QtGui.QLabel('Telef. Movil')
         self.txtTelefMovil = miQLineEdit()
+        self.txtTelefMovil.setToolTip('Ingrese el numero de telefono celular sin espacios en blanco')
+        self.txtTelefMovil.setInputMask('99999999999')
  
         #Campo Email
         self.lblEmail = QtGui.QLabel('Email')
@@ -208,7 +214,7 @@ class ui_(QtGui.QWidget):
         self.btnDptoBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarDpto = QtGui.QIcon()
-        self.iconBtnBuscarDpto.addPixmap(QtGui.QPixmap('img/contactos/apartment-2-16.png'))
+        self.iconBtnBuscarDpto.addPixmap(QtGui.QPixmap('img/apartment-2-16.png'))
         self.btnDptoBuscar.setIcon(self.iconBtnBuscarDpto)
         self.spacerDepartamento = QtGui.QSpacerItem(400, 20)
         self.hlDepartamento = QtGui.QHBoxLayout()
@@ -225,7 +231,7 @@ class ui_(QtGui.QWidget):
         self.btnLocalBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarLocal = QtGui.QIcon()
-        self.iconBtnBuscarLocal.addPixmap(QtGui.QPixmap('img/contactos/map-4-24.png'))
+        self.iconBtnBuscarLocal.addPixmap(QtGui.QPixmap('img/map-4-24.png'))
         self.btnLocalBuscar.setIcon(self.iconBtnBuscarLocal)
         
         self.spacerLocal = QtGui.QSpacerItem(400, 20)
@@ -243,7 +249,7 @@ class ui_(QtGui.QWidget):
         self.btnUbicaBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarUbica = QtGui.QIcon()
-        self.iconBtnBuscarUbica.addPixmap(QtGui.QPixmap('img/contactos/building-5-24.png'))
+        self.iconBtnBuscarUbica.addPixmap(QtGui.QPixmap('img/building-5-24.png'))
         self.btnUbicaBuscar.setIcon(self.iconBtnBuscarUbica)
         self.spacerUbica = QtGui.QSpacerItem(400, 20)
         
@@ -255,6 +261,14 @@ class ui_(QtGui.QWidget):
         #Campo Observacion
         self.lblObservacion = QtGui.QLabel('Observacion:')
         self.txtObservacion = miQLineEdit()
+
+        #Campo Activo
+        self.chkActivo = QtGui.QCheckBox('Usuario Activo')
+        self.chkActivo.setChecked(True)
+
+        #Barra de Estado
+        #status = self.statusBar()
+        #status.showMessage("Listo")
 
         #La Tabla
         self.tableWidget = QtGui.QTableWidget()
@@ -308,7 +322,9 @@ class ui_(QtGui.QWidget):
         self.gl.addWidget(self.lblObservacion, 15, 1)
         self.gl.addWidget(self.txtObservacion, 15, 2)
 
-        self.setGeometry(0, 0, 1350, 496)
+        self.gl.addWidget(self.chkActivo, 16, 1)
+
+        self.setGeometry(10, 10, 1350, 496)
 
         self.setLayout(self.gl)
         
@@ -344,6 +360,7 @@ class ui_(QtGui.QWidget):
                 lambda: self.quitarId(self.txtUbicacion, self.txtObservacion))
         
         self.connect(self.txtObservacion, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
+        self.connect(self.chkActivo, QtCore.SIGNAL("stateChanged(int)"), self.Buscar)
         self.connect(self.tableWidget, QtCore.SIGNAL("itemClicked(QTableWidgetItem*)"), self.clickEnTabla)
 
         self.establecerOrder()
@@ -586,24 +603,26 @@ class ui_(QtGui.QWidget):
         lcLocalidad = self.txtLocalidad.text()
         lcUbicacion = self.txtUbicacion.text()
         lcObservacion = self.txtObservacion.text()
+        lbActivo = 0 if self.chkActivo.isChecked() else 1
         #print 'El Nombre es:%s' % (self.txtNombre.text().toUpper())
 
         vId = " c.id = {0} AND ".format(lcId) if lcId else ''
         vCed = " c.cedula = {0} AND ".format(lcCedula) if lcCedula else ''
-        vCod = "upper(c.codigo)  = '{0}' AND ".format(lcCodigo.toUpper()) if lcCodigo else ''
-        vNom = "upper(c.nombre) like '%{0}%' AND ".format(lcNombre.toUpper()) if lcNombre else ''
-        vApe = "upper(c.apellido) like '%{0}%' AND ".format(lcApellido.toUpper()) if lcApellido else ''
-        vUsu = "upper(c.usuario_red) like '%{0}%' AND ".format(lcUsuarioRed.toUpper()) if lcUsuarioRed else ''
-        vTipc = "upper(c.tipo_contacto) like '%{0}%' AND ".format(lcTipoContacto.toUpper()) if lcTipoContacto else ''
+        vCod = "upper(c.codigo)  = '{0}' AND ".format(lcCodigo.upper()) if lcCodigo else ''
+        vNom = "upper(c.nombre) like '%{0}%' AND ".format(lcNombre.upper()) if lcNombre else ''
+        vApe = "upper(c.apellido) like '%{0}%' AND ".format(lcApellido.upper()) if lcApellido else ''
+        vUsu = "upper(c.usuario_red) like '%{0}%' AND ".format(lcUsuarioRed.upper()) if lcUsuarioRed else ''
+        vTipc = "upper(c.tipo_contacto) like '%{0}%' AND ".format(lcTipoContacto.upper()) if lcTipoContacto else ''
         vTlfO = "c.telefono_oficina like '%{0}%' AND ".format(lcTelefOficina) if lcTelefOficina else ''
         vTlfM = "c.telefono_movil like '%{0}%' AND ".format(lcTelefMovil) if lcTelefMovil else ''
-        vEma = "upper(c.email) like '%{0}%' AND ".format(lcEmail.toUpper()) if lcEmail else ''
-        vDpto = "upper(d.sym) like '%{0}%' AND ".format(lcDepartamento.toUpper()) if lcDepartamento else ''
-        vLoc = "upper(l.sym) like '%{0}%' AND ".format(lcLocalidad.toUpper()) if lcLocalidad else ''
-        vUbi = "upper(u.sym) like '%{0}%' AND ".format(lcUbicacion.toUpper()) if lcUbicacion else ''
-        vObs = "upper(c.observacion) like '%{0}%' AND ".format(lcObservacion.toUpper()) if lcObservacion else ''
+        vEma = "upper(c.email) like '%{0}%' AND ".format(lcEmail.upper()) if lcEmail else ''
+        vDpto = "upper(d.sym) like '%{0}%' AND ".format(lcDepartamento.upper()) if lcDepartamento else ''
+        vLoc = "upper(l.sym) like '%{0}%' AND ".format(lcLocalidad.upper()) if lcLocalidad else ''
+        vUbi = "upper(u.sym) like '%{0}%' AND ".format(lcUbicacion.upper()) if lcUbicacion else ''
+        vObs = "upper(c.observacion) like '%{0}%' AND ".format(lcObservacion.upper()) if lcObservacion else ''
+        vAct = "c.activo = {0} AND ".format(lbActivo) if lbActivo else ''
 
-        campos = vId + vCed + vCod + vNom + vApe + vUsu + vTipc + vTlfO + vTlfM + vEma + vDpto + vLoc + vUbi + vObs
+        campos = vId + vCed + vCod + vNom + vApe + vUsu + vTipc + vTlfO + vTlfM + vEma + vDpto + vLoc + vUbi + vObs + vAct
         
         cadenaSql = '''select 
         c.id ,c.cedula, c.codigo, c.nombre, c.apellido,c.usuario_red,
@@ -790,12 +809,36 @@ class ui_(QtGui.QWidget):
             self.habilitarNuevo()
         else:
             #Ejecurar sentencia SQL para guardar en PostGreSQL
-            nombre = self.txtNombre.text()
-            dpto = self.txtDepartamento.text()
-            telf = self.txtTelefono.text()
-
-            sqlInsert = " insert into agenda (nombre, departamento, telefono) values ('%s', '%s', '%s') " % (nombre, dpto, telf)
             
+            #Campturar lo que tienen los LineEdit
+            #lcId = self.txtId.text()
+            lcCedula = self.txtCedula.text()
+            lcCodigo = self.txtCodigo.text()
+            lcNombre = self.txtNombre.text()
+            lcApellido = self.txtApellido.text()
+            lcUsuarioRed = self.txtUsuarioRed.text()
+            #lcTipoContacto = self.cbxTipoContacto.currentText()
+            lcTelefOficina = self.txtTelefOficina.text()
+            lcTelefMovil = self.txtTelefMovil.text()
+            lcEmail = self.txtEmail.text()
+            lnDepartamento_id = self.txtDepartamento.tag
+            lnLocalidad_id = self.txtLocalidad.tag
+            lnUbicacion_id = self.txtUbicacion.tag
+            lcObservacion = self.txtObservacion.text()
+            lbActivo = 0 if self.chkActivo else 1
+
+            if not lcCedula or not lcCodigo or not lcNombre or not lcApellido:
+                msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...!', 'Hay campos que no pueden quedar vacios, verifica e intente de nuevo.')
+                msgBox.exec_()
+                return
+
+            sqlInsert = '''insert into asiste.contactos 
+            (cedula, codigo, nombre, apellido, usuario_red, telefono_oficina, telefono_movil, email, departamento_id, localidad_id, ubicacion_id, observacion, activo)
+            values ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, {9}, {10}, '{11}', {12})'''.format(lcCedula, lcCodigo, lcNombre, 
+                    lcApellido, lcUsuarioRed, lcTelefOficina, lcTelefMovil, lcEmail, lnDepartamento_id, lnLocalidad_id, lnUbicacion_id, lcObservacion, lbActivo)
+
+            print sqlInsert
+
             try:
                 pg = ConectarPG(self.cadconex)
                 pg.ejecutar(sqlInsert)
@@ -809,10 +852,7 @@ class ui_(QtGui.QWidget):
                 self.limpiarText()
             except:
                 print exceptionValue
-            
-            #Restaurar todos los Iconos y Botones
-            #self.iniciarForm()
-            #self.limpiarText()
+
 
     def habilitarNuevo(self):
         ''' 
