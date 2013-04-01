@@ -18,6 +18,7 @@ class miQLineEdit(QtGui.QLineEdit):
         self.backColor()
         self.tag = ''
         self.listaAutoC = ''
+        self.completer = ''
 
     def autoCompletado(self, lista):
         '''
@@ -32,6 +33,7 @@ class miQLineEdit(QtGui.QLineEdit):
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.setCompleter(completer)
         self.listaAutoC = lista
+        self.completer = completer
 
     '''
     def focusOutEvent(self, event):
@@ -489,6 +491,8 @@ class ui_(QtGui.QWidget):
 
         #Capturo la informacion escrita en la caja de Texto
         # Obtengo la lista de autocompletado que esta almacenada como propiedad del Objeto, ver Clase miQLineEdit()
+        print objTexto.completer.currentRow()
+
         lObjAC =  objTexto.listaAutoC          
         valorId = objTexto.tag
         valorPasado = str(objTexto.text()).upper()
