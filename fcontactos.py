@@ -339,6 +339,7 @@ class ui_(QtGui.QWidget):
         self.connect(self.btnDeshacer, QtCore.SIGNAL("clicked()"), self.iniciarForm)
         self.connect(self.btnLimpiar, QtCore.SIGNAL("clicked()"), self.limpiarText)
         self.connect(self.btnExportar, QtCore.SIGNAL("clicked()"), self.mostrar)
+        self.connect(self.btnModificar, QtCore.SIGNAL("clicked()"), self.modificarGuardar)
 
         #Eventos de los QLineEdit
         self.connect(self.txtId, QtCore.SIGNAL("textChanged(QString)"), self.Buscar)
@@ -919,20 +920,65 @@ class ui_(QtGui.QWidget):
             self.habilitarModificar()
         else:            
             #Ejecurar sentencia SQL para guardar en PostGreSQL
-            id = self.txtId.text()
-            nombre = self.txtNombre.text()
-            dpto = self.txtDepartamento.text()
-            telf = self.txtTelefono.text()
+            #Campturar lo que tienen los LineEdit
+            lnId = self.txtId.text()
+            lnCedula = self.txtCedula.text()
+            lcCodigo = self.txtCodigo.text()
+            lcNombre = self.txtNombre.text()
+            lcApellido = self.txtApellido.text()
+            lcUsuarioRed = self.txtUsuarioRed.text()
+            #lcTipoContacto = self.cbxTipoContacto.currentText()
+            lcTelefOficina = self.txtTelefOficina.text()
+            lcTelefMovil = self.txtTelefMovil.text()
+            lcEmail = self.txtEmail.text()
+            lnDepartamento_id = self.txtDepartamento.tag
+            lnLocalidad_id = self.txtLocalidad.tag
+            lnUbicacion_id = self.txtUbicacion.tag
+            lcObservacion = self.txtObservacion.text()
+            lbActivo = 0 if self.chkActivo else 1
 
-            sqlUpdate = " update agenda set nombre = '%s', departamento = '%s', telefono = '%s' where id = %s " % (nombre, dpto, telf, id)
+            if not lnCedula or not lcCodigo or not lcNombre or not lcApellido:
+                msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...!', 
+                        'Hay campos que no pueden quedar vacios, verifique e intente de nuevo.')
+                msgBox.exec_()
+                return
+
+            sqlUpdate = '''update asiste.contactos set 
+                            cedula = {0},
+                            codigo = '{1}',
+                            nombre = '{2}',
+                            apellido = '{3}',
+                            usuario_red = '{4}',
+                            email = '{5}',
+                            telefono_oficina = '{6}',
+                            telefono_movil = '{7}',
+                            observacion = '{8}',
+                            departamento_id = {9},
+                            localidad_id = {10},
+                            ubicacion_id = {11},
+                            activo = {12} 
+                            where id = {13} '''.format(
+                                    lnCedula,
+                                    lcCodigo,
+                                    lcNombre,
+                                    lcApellido,
+                                    lcUsuarioRed,
+                                    lcEmail,
+                                    lcTelefOficina,
+                                    lcTelefMovil,
+                                    lcObservacion,
+                                    lnDepartamento_id,
+                                    lnLocalidad_id,
+                                    lnUbicacion_id,
+                                    lbActivo,
+                                    lnId)
             print sqlUpdate
-
             try:
                 pg = ConectarPG(self.cadconex)
                 pg.ejecutar(sqlUpdate)
                 pg.conn.commit()
 
-                lcMensaje = 'Registro Guardaro Satisfactoriamente'  # self.combo.currentText()
+                lcMensaje = 'Cambios realizados Satisfactoriamente'
                 msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, 'Felicidades',lcMensaje)
                 msgBox.exec_()
             except:
