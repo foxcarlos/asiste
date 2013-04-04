@@ -28,8 +28,8 @@
         <string>  &amp;Nuevo  </string>
        </property>
        <property name="icon">
-        <iconset resource="../recursos.qrc">
-         <normaloff>:/img/30px-Crystal_Clear_app_List_manager.png</normaloff>:/img/30px-Crystal_Clear_app_List_manager.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/30px-Crystal_Clear_app_List_manager.png</normaloff>:/30px-Crystal_Clear_app_List_manager.png</iconset>
        </property>
       </widget>
      </item>
@@ -45,8 +45,8 @@
         <string>&amp;Modificar</string>
        </property>
        <property name="icon">
-        <iconset resource="../recursos.qrc">
-         <normaloff>:/img/40px-Crystal_Clear_app_kedit.png</normaloff>:/img/40px-Crystal_Clear_app_kedit.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/40px-Crystal_Clear_app_kedit.png</normaloff>:/40px-Crystal_Clear_app_kedit.png</iconset>
        </property>
       </widget>
      </item>
@@ -59,8 +59,8 @@
         <string>&amp;Eliminar</string>
        </property>
        <property name="icon">
-        <iconset resource="../recursos.qrc">
-         <normaloff>:/img/30px_1 (514).png</normaloff>:/img/30px_1 (514).png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/30px_1 (514).png</normaloff>:/30px_1 (514).png</iconset>
        </property>
       </widget>
      </item>
@@ -73,8 +73,8 @@
         <string>&amp;Deshacer</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/40px_reload.png</normaloff>../img/40px_reload.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/40px_reload.png</normaloff>:/40px_reload.png</iconset>
        </property>
       </widget>
      </item>
@@ -87,8 +87,8 @@
         <string>&amp;Limpiar</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/erase.png</normaloff>../img/erase.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/erase.png</normaloff>:/erase.png</iconset>
        </property>
       </widget>
      </item>
@@ -104,8 +104,8 @@
         <string>&amp;Exportar</string>
        </property>
        <property name="icon">
-        <iconset resource="../recursos.qrc">
-         <normaloff>:/buscar20px</normaloff>:/buscar20px</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/OfficeExcel.png</normaloff>:/OfficeExcel.png</iconset>
        </property>
       </widget>
      </item>
@@ -131,8 +131,8 @@
         <string>    &amp;Salir   </string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/25px_exit.png</normaloff>../img/25px_exit.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/25px_exit.png</normaloff>:/25px_exit.png</iconset>
        </property>
       </widget>
      </item>
@@ -467,8 +467,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/contactos/apartment-2-16.png</normaloff>../img/contactos/apartment-2-16.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/apartment-2-16.png</normaloff>:/apartment-2-16.png</iconset>
        </property>
       </widget>
      </item>
@@ -505,8 +505,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/contactos/map-4-24.png</normaloff>../img/contactos/map-4-24.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/map-4-16.png</normaloff>:/map-4-16.png</iconset>
        </property>
       </widget>
      </item>
@@ -543,8 +543,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../img/contactos/building-5-24.png</normaloff>../img/contactos/building-5-24.png</iconset>
+        <iconset resource="../img/recursos.qrc">
+         <normaloff>:/building-5-24.png</normaloff>:/building-5-24.png</iconset>
        </property>
       </widget>
      </item>
@@ -580,7 +580,8 @@
   </layout>
  </widget>
  <resources>
-  <include location="../recursos.qrc"/>
+  <include location="../img/recursos.qrc"/>
+  <include location="recursos.qrc"/>
  </resources>
  <connections/>
 </ui>

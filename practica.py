@@ -5,6 +5,7 @@ import sys
 from PySide import QtCore, QtGui
 from rutinas.varias import *
 import os
+import recursos
 
 ruta_arch_conf = os.path.dirname(sys.argv[0])
 archivo_configuracion = os.path.join(ruta_arch_conf, 'config.conf')
@@ -28,7 +29,7 @@ class miQLineEdit(QtGui.QLineEdit):
         Parametro recibidos 1:
         1-) Tipo Lista, La lista que se desea mostrar en el autocompletado
        '''       
-        self.listaPalabras = [f[0].strip() for f in lista]
+        self.listaPalabras = [f[0] for f in lista]
         completer = QtGui.QCompleter(self.listaPalabras, self)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.setCompleter(completer)
@@ -65,47 +66,49 @@ class ui_(QtGui.QWidget):
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Window, brush)
         self.setPalette(palette)
+        #self.statusBar().showMessage("Listo")
        
         self.btnNuevo = QtGui.QPushButton()
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("img/30px-Crystal_Clear_app_List_manager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnNuevo.setIcon(icon1)
-        self.btnNuevo.setText('  &Nuevo  ')
+        icon12 = QtGui.QIcon()
+        #":/img/20px_find.jpg"
+        icon12.addPixmap(QtGui.QPixmap(":/img/30px_Crystal_Clear_app_List_manager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnNuevo.setIcon(icon12)
+        self.btnNuevo.setText('&Nuevo')
 
         self.btnModificar = QtGui.QPushButton()
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("img/40px-Crystal_Clear_app_kedit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/img/40px_Crystal_Clear_app_kedit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnModificar.setIcon(icon2)
         self.btnModificar.setText('&Modificar')
         self.btnModificar.setIcon(icon2)
 
         self.btnEliminar = QtGui.QPushButton()
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("img/30px_1 (514).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(":/img/30px_1 (514).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnEliminar.setIcon(icon3)
         self.btnEliminar.setText('&Eliminar ')
 
         self.btnDeshacer = QtGui.QPushButton()
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap("img/40px_reload.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(":/img/40px_reload.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnDeshacer.setIcon(icon4)
         self.btnDeshacer.setText('&Deshacer ')
 
         self.btnLimpiar = QtGui.QPushButton()
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap("img/erase.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(":/img/erase.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnLimpiar.setIcon(icon5)
         self.btnLimpiar.setText(' &Limpiar ')
 
         self.btnExportar = QtGui.QPushButton()
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("img/OfficeExcel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap(":/img/OfficeExcel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnExportar.setIcon(icon6)
         self.btnExportar.setText('&Exportar ')
 
         self.btnSalir = QtGui.QPushButton()
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap("img/25px_exit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap(":/img/25px_exit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnSalir.setIcon(icon7)
         self.btnSalir.setText('  &Salir  ')
 
@@ -208,7 +211,7 @@ class ui_(QtGui.QWidget):
         self.txtEmail = miQLineEdit()
  
         #Campo Departamento
-        l= ["Select sym||'|'||id as departamento from asiste.departamento where del = 0 and activo = 0 order by sym"]
+        l= ["Select sym||' | '||id as departamento from asiste.departamento where del = 0 and activo = 0 order by sym"]
         listaDevuelta = self.prepararAutoCompletar(l)
         self.lblDepartamento = QtGui.QLabel('Departamento:')
         self.txtDepartamento = miQLineEdit()
@@ -216,16 +219,16 @@ class ui_(QtGui.QWidget):
         self.btnDptoBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarDpto = QtGui.QIcon()
-        self.iconBtnBuscarDpto.addPixmap(QtGui.QPixmap('img/apartment-2-16.png'))
+        self.iconBtnBuscarDpto.addPixmap(QtGui.QPixmap(':/img/apartment-2-16.png'))
         self.btnDptoBuscar.setIcon(self.iconBtnBuscarDpto)
-        self.spacerDepartamento = QtGui.QSpacerItem(400, 20)
+        self.spacerDepartamento = QtGui.QSpacerItem(300, 20)
         self.hlDepartamento = QtGui.QHBoxLayout()
         self.hlDepartamento.addWidget(self.txtDepartamento)
         self.hlDepartamento.addWidget(self.btnDptoBuscar)
         self.hlDepartamento.addItem(self.spacerDepartamento)
 
         #Campo Localidad
-        l= ["Select sym||'|'||id as Localidad from asiste.localidad where del = 0 and activo = 0 order by sym"]
+        l= ["Select sym||' | '||id as Localidad from asiste.localidad where del = 0 and activo = 0 order by sym"]
         listaDevuelta = self.prepararAutoCompletar(l)
         self.lblLocalidad = QtGui.QLabel('Localidad')
         self.txtLocalidad = miQLineEdit()
@@ -233,17 +236,17 @@ class ui_(QtGui.QWidget):
         self.btnLocalBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarLocal = QtGui.QIcon()
-        self.iconBtnBuscarLocal.addPixmap(QtGui.QPixmap('img/map-4-24.png'))
+        self.iconBtnBuscarLocal.addPixmap(QtGui.QPixmap(':/img/map-4-24.png'))
         self.btnLocalBuscar.setIcon(self.iconBtnBuscarLocal)
         
-        self.spacerLocal = QtGui.QSpacerItem(400, 20)
+        self.spacerLocal = QtGui.QSpacerItem(300, 20)
         self.hlLocal = QtGui.QHBoxLayout()
         self.hlLocal.addWidget(self.txtLocalidad)
         self.hlLocal.addWidget(self.btnLocalBuscar)
         self.hlLocal.addItem(self.spacerLocal)
 
         #Campo Ubicacion
-        l= ["Select sym||'|'||id as Ubicacion from asiste.ubicacion where del = 0 and activo = 0  order by sym"]
+        l= ["Select sym||' | '||id as Ubicacion from asiste.ubicacion where del = 0 and activo = 0  order by sym"]
         listaDevuelta = self.prepararAutoCompletar(l)
         self.lblUbicacion = QtGui.QLabel('Ubicacion:')
         self.txtUbicacion = miQLineEdit()
@@ -251,9 +254,9 @@ class ui_(QtGui.QWidget):
         self.btnUbicaBuscar = QtGui.QPushButton()
 
         self.iconBtnBuscarUbica = QtGui.QIcon()
-        self.iconBtnBuscarUbica.addPixmap(QtGui.QPixmap('img/building-5-24.png'))
+        self.iconBtnBuscarUbica.addPixmap(QtGui.QPixmap(':/img/building-5-24.png'))
         self.btnUbicaBuscar.setIcon(self.iconBtnBuscarUbica)
-        self.spacerUbica = QtGui.QSpacerItem(400, 20)
+        self.spacerUbica = QtGui.QSpacerItem(300, 20)
         
         self.hlUbica = QtGui.QHBoxLayout()
         self.hlUbica.addWidget(self.txtUbicacion)
@@ -438,12 +441,12 @@ class ui_(QtGui.QWidget):
 
         #Cambiar icono del Boton Nuevo por Nuevo
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("img/30px-Crystal_Clear_app_List_manager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/img/30px_Crystal_Clear_app_List_manager.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnNuevo.setIcon(icon1)
         
         #Cambiar icono del Boton Modificar por Modificar
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("img/40px-Crystal_Clear_app_kedit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/img/40px_Crystal_Clear_app_kedit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnModificar.setIcon(icon2)
 
         if sys.platform == 'win32':
@@ -497,8 +500,8 @@ class ui_(QtGui.QWidget):
         valorId = objTexto.tag
         valorPasado = str(objTexto.text()).upper()
 
-        listaCod = valorPasado.split('|')
-        listaFinal  =  [f[0].strip() for f in lObjAC]
+        listaCod = valorPasado.split(' | ')
+        listaFinal  =  [f[0] for f in lObjAC]
         '''
         Se verifica si lo escrito en la caja de texto fue seleccionada 
         de la lista de autocompletado o fue escrito manualmente;
@@ -520,8 +523,8 @@ class ui_(QtGui.QWidget):
                
             conseguido = False
             for f in listaFinal:
-                if nombre in f.upper().split('|'):
-                    id = f.split('|')[1]
+                if nombre in f.upper().split(' | '):
+                    id = f.split(' | ')[1]
                     conseguido = True
     
             if conseguido:
@@ -832,14 +835,18 @@ class ui_(QtGui.QWidget):
             lbActivo = 0 if self.chkActivo else 1
 
             if not lcCedula or not lcCodigo or not lcNombre or not lcApellido:
-                msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...!', 'Hay campos que no pueden quedar vacios, verifica e intente de nuevo.')
+                msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Lo Siento...!', 
+                        'Hay campos que no pueden quedar vacios, verifica e intente de nuevo.')
                 msgBox.exec_()
                 return
 
             sqlInsert = '''insert into asiste.contactos 
-            (cedula, codigo, nombre, apellido, usuario_red, telefono_oficina, telefono_movil, email, departamento_id, localidad_id, ubicacion_id, observacion, activo)
-            values ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, {9}, {10}, '{11}', {12})'''.format(lcCedula, lcCodigo, lcNombre, 
-                    lcApellido, lcUsuarioRed, lcTelefOficina, lcTelefMovil, lcEmail, lnDepartamento_id, lnLocalidad_id, lnUbicacion_id, lcObservacion, lbActivo)
+            (cedula, codigo, nombre, apellido, usuario_red, telefono_oficina, telefono_movil, email, 
+            departamento_id, localidad_id, ubicacion_id, observacion, activo)
+            values ({0}, '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, {9}, {10}, '{11}', {12})'''\
+                    .format(lcCedula, lcCodigo, lcNombre, 
+                    lcApellido, lcUsuarioRed, lcTelefOficina, lcTelefMovil, lcEmail, \
+                    lnDepartamento_id, lnLocalidad_id, lnUbicacion_id, lcObservacion, lbActivo)
 
             print sqlInsert
 
@@ -890,7 +897,7 @@ class ui_(QtGui.QWidget):
             
         #Cambiar icono del Boton Nuevo  de Nuevo por Guardar
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("img/40px_3floppy_unmount.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/img/40px_3floppy_unmount.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnNuevo.setIcon(icon1)
         self.txtCedula.setFocus()
 
@@ -963,12 +970,13 @@ class ui_(QtGui.QWidget):
             
         #Cambiar icono del Boton Nuevo  de Nuevo por Guardar
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("img/40px_3floppy_unmount.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/img/40px_3floppy_unmount.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnModificar.setIcon(icon1)
         self.txtNombre.setFocus()
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     forma = ui_()
+    #forma.statusBar().showMessage('Listo')
     forma.show()
     sys.exit(app.exec_())
