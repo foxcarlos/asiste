@@ -847,6 +847,15 @@ class ui_(QtGui.QWidget):
                 return
 
             #Validar que no existan ya la cedula y el Codigo
+            sqlRepetidos = 'Select *from asiste.contactos c where c.cedula = {0} or c.codigo = "{1}"'\
+                    .format(lcCedula, lcCodigo)
+            try:
+                pg = ConectarPG(self.cadconex)
+                totalRegistros = pg.ejecutar(sqlRepetidos)
+                pg.cur.close()
+                pg.conn.close()
+            except:
+                print exceptionValue
 
             sqlInsert = '''insert into asiste.contactos
             (cedula, codigo, nombre, apellido, usuario_red, telefono_oficina, telefono_movil, email,
